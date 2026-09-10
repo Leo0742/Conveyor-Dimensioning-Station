@@ -70,7 +70,9 @@ subsampling [26–29]. Desktop Emulator оказался account-gated Windows p
 Официальный datasheet: одна камера, 1920 точек/профиль, FOV 390–2000 мм,
 X resolution 0,25–1,1 мм, clearance 350 мм, MR 1525 мм, Z linearity
 ±0,04% MR, repeatability 0,012 мм; 370 Гц на полном поле, 800 Гц для области
-1×2 м и до 5000 Гц [5, 6]. Z resolution отдельно не опубликована.
+1×2 м и до 5000 Гц [5, 6]. В используемом англоязычном datasheet отдельная
+строка Z resolution не приведена; официальный японский datasheet LMI указывает
+Z resolution 0,06–1,5 мм [30].
 
 Расчёт для FOV 680 мм:
 

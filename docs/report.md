@@ -159,7 +159,9 @@ subsampling, рассчитывается Trigger panel, а слишком ча�
 FOV 390–2000 мм, X resolution 0,25–1,1 мм, clearance 350 мм, MR 1525 мм,
 Z linearity ±0,04% MR, repeatability 0,012 мм и 370 Гц на полном поле;
 официальная продуктовая страница отдельно приводит 800 Гц для области 1×2 м
-и до 5000 Гц [5, 6]. Z resolution в рассмотренном datasheet отдельно не указана.
+и до 5000 Гц [5, 6]. В используемом англоязычном datasheet отдельная строка
+Z resolution не приведена; официальный японский datasheet LMI указывает
+Z resolution 0,06–1,5 мм [30].
 
 **CALCULATED.** Для FOV=680 мм на Z=300 мм `z_top≈274,69 мм`; высота
 ≈924,69 мм. На ленте FOV≈996,72 мм, pitch≈0,519 мм и ≈19,26 отсчёта
@@ -199,10 +201,11 @@ depth accuracy <2% на 4 м [11]. Производитель документи
 ≈1,19 мм/pixel и ≈8,4 pixels на 10 мм. При 90 fps объект проходит 11,1 мм между
 кадрами; нужна точная фаза триггера, а для min-size нет продольной избыточности.
 Две диагональные камеры сокращают слепые зоны, но требуют stereo-depth fusion.
-Формулировка ±2% не гарантирует ≤5 мм в рабочей станции: 2% от 0,8 м — 16 мм,
-хотя фактическая локальная ошибка может быть меньше. Active stereo чувствительна
-к слабой/повторяющейся текстуре, внешнему IR, чёрным, бликующим и прозрачным
-поверхностям. Вариант пригоден для недорогого лабораторного PoC, но не выбран.
+Опубликованная характеристика <2% на 4 м не является гарантией ≤5 мм для всей
+измерительной станции в нашем рабочем диапазоне. Поэтому соответствие требованию
+`±max(5%, 5 мм)` нельзя доказать по публичной спецификации D457. Active stereo
+чувствительна к слабой/повторяющейся текстуре, внешнему IR, чёрным, бликующим и
+прозрачным поверхностям. Вариант пригоден для недорогого лабораторного PoC, но не выбран.
 
 ### 4.6 Сводная матрица
 
@@ -467,9 +470,9 @@ Ground truth хранится в evaluator metadata. Измеритель пол
 
 `Acceptance rate=(correct OK+wrong OK)/expected-valid`; `precision among
 accepted=correct OK/(correct OK+wrong OK)`; `correct measurement rate=correct
-OK/expected-valid`. Последнее раньше ошибочно называлось coverage.
+OK/expected-valid`.
 
-| Monte Carlo subset | Total | Exp. valid | Exp. reject | Correct OK | Wrong OK | Rejected valid | Acceptance rate | Precision among accepted | Correct measurement rate |
+| Monte Carlo subset | Total | Exp. valid | Exp. reject | Correct OK | Wrong OK | Rejected valid | Acceptance | Accepted precision | Correct rate |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | yaw-only | 125 | 125 | 0 | 125 | 0 | 0 | 100,0% | 100,0% | 100,0% |
 | tilted/irregular | 125 | 125 | 0 | 90 | 16 | 19 | 84,8% | 84,9% | 72,0% |
@@ -481,7 +484,7 @@ OK/expected-valid`. Последнее раньше ошибочно назыв�
 защитной логики на искусственном поднаборе, **не ожидаемая false-ok rate физической
 станции**. Порог OBB disagreement выбран только на development seed 1337:
 
-| Development gate | Correct OK | Wrong OK | Reject | Acceptance rate | Precision among accepted | Correct measurement rate |
+| Development gate | Correct OK | Wrong OK | Reject | Acceptance | Accepted precision | Correct rate |
 |---|---:|---:|---:|---:|---:|---:|
 | нет | 95 | 30 | 0 | 100,0% | 76,0% | 76,0% |
 | disagreement ≤30% | 91 | 27 | 7 | 94,4% | 77,1% | 72,8% |
@@ -621,8 +624,7 @@ Software PoC реализован и воспроизводим. На tilted/irr
 21. OpenCV. Camera calibration and 3D reconstruction:
     https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html
 22. Open3D development API. Tensor OrientedBoundingBox, включая
-    `MethodOBBCreate.MINIMAL_JYLANKI`:
-    https://www.open3d.org/docs/latest/python_api/open3d.t.geometry.OrientedBoundingBox.html
+    `MethodOBBCreate.MINIMAL_JYLANKI`: [официальная документация](https://www.open3d.org/docs/latest/python_api/open3d.t.geometry.OrientedBoundingBox.html)
 23. LMI Technologies. Gocator 2880 launch, complex shapes and packaging:
     https://lmi3d.com/news/lmi-technologies-unveils-gocator-2880-the-first-all-in-one-3d-profile-sensor-with-dual-cameras/
 24. LMI Technologies. Box Void Fill Measurement with a Gocator 2880:
@@ -632,11 +634,13 @@ Software PoC реализован и воспроизводим. На tilted/irr
 26. LMI Technologies. Gocator 2300/2880 Series User Manual:
     https://lmi3d.com/wp-content/uploads/2016-08/15159-4.3.3.167_MANUAL_User_Gocator-2300-2880-Series.pdf
 27. LMI Technologies. GoPxL Configuring Acquisition:
-    https://ap.lmi3d.com/manuals/gopxl/gopxl-1.3/LMILaserLineProfiler/Content/WebInterface/Acquire/ConfiguringAcquisition.htm
+    [официальная документация](https://ap.lmi3d.com/manuals/gopxl/gopxl-1.3/LMILaserLineProfiler/Content/WebInterface/Acquire/ConfiguringAcquisition.htm)
 28. LMI Technologies Support. Improving Max Frame Rate:
     https://support.lmi3d.com/hc/en-us/articles/360033661791-Improving-Max-Frame-Rate
 29. LMI Technologies Support. Trigger Drop warnings in Encoder Trigger mode:
     https://support.lmi3d.com/hc/en-us/articles/360033336991-Trigger-Drop-warnings-in-Encoder-Trigger-mode
+30. LMI Technologies. Gocator 2490 Japanese Datasheet, rev. 1.1:
+    [официальный PDF](https://lmi3d.com/wp-content/uploads/2020-02/DATASHEET_Gocator_2490_JP_WEB_0.pdf)
 
 ## Приложение A. Воспроизведение
 

@@ -42,6 +42,7 @@
 27. LMI Technologies. [GoPxL — Configuring Acquisition](https://ap.lmi3d.com/manuals/gopxl/gopxl-1.3/LMILaserLineProfiler/Content/WebInterface/Acquire/ConfiguringAcquisition.htm). Официальное описание Trigger panel и расчёта максимальной частоты.
 28. LMI Technologies Support. [Improving Max Frame Rate](https://support.lmi3d.com/hc/en-us/articles/360033661791-Improving-Max-Frame-Rate). Зависимость от exposure, active area и subsampling.
 29. LMI Technologies Support. [Trigger Drop warnings in Encoder Trigger mode](https://support.lmi3d.com/hc/en-us/articles/360033336991-Trigger-Drop-warnings-in-Encoder-Trigger-mode). Поведение при encoder-trigger выше доступной частоты.
+30. LMI Technologies. [Gocator 2490 Japanese Datasheet](https://lmi3d.com/wp-content/uploads/2020-02/DATASHEET_Gocator_2490_JP_WEB_0.pdf), rev. 1.1. Официальная таблица указывает Z resolution 0,06–1,5 мм; используемый англоязычный datasheet отдельной строки Z resolution не содержит.
 
 ## Публичные данные
 
