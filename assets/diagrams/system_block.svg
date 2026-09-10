@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+<style>
+  text { font-family: 'DejaVu Sans', Arial, sans-serif; fill: #17212b; }
+  .title { font-size: 28px; font-weight: 700; }
+  .label { font-size: 18px; }
+  .small { font-size: 15px; fill: #455a64; }
+  .hardware { fill: #e8f1fb; stroke: #145ea8; stroke-width: 2.5; }
+  .process { fill: #f4f6f8; stroke: #455a64; stroke-width: 2; }
+  .signal { stroke: #1565c0; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+  .dimension { stroke: #c62828; stroke-width: 2; fill: none; marker-start: url(#dim); marker-end: url(#dim); }
+  .laser { stroke: #d32f2f; stroke-width: 3; fill: none; }
+  .dash { stroke-dasharray: 8 6; }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1565c0"/></marker>
+  <marker id="dim" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,4 L8,0 L8,8 z" fill="#c62828"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="60" y="54" class="title">Контур данных и управления</text>
+
+<rect x="60" y="115" width="220" height="90" rx="6" class="hardware"/>
+<text x="170" y="150" text-anchor="middle" class="label">SICK WLF4FI</text><text x="170" y="177" text-anchor="middle" class="small">presence trigger</text>
+<rect x="60" y="260" width="220" height="90" rx="6" class="hardware"/>
+<text x="170" y="295" text-anchor="middle" class="label">SICK DFS60</text><text x="170" y="322" text-anchor="middle" class="small">encoder, шаг 1 mm</text>
+<rect x="360" y="175" width="240" height="120" rx="6" class="hardware"/>
+<text x="480" y="215" text-anchor="middle" class="label">Gocator 2880</text><text x="480" y="242" text-anchor="middle" class="small">dual-camera laser profiles</text><text x="480" y="268" text-anchor="middle" class="small">Gigabit Ethernet</text>
+
+<path d="M280 160 H360" class="signal"/><path d="M280 305 H320 V260 H360" class="signal"/>
+<rect x="680" y="105" width="260" height="310" rx="6" class="process"/>
+<text x="810" y="142" text-anchor="middle" class="label">OnLogic Karbon K801</text>
+<text x="710" y="182" class="small">1. calibration transform</text><text x="710" y="212" class="small">2. plane removal</text>
+<text x="710" y="242" class="small">3. filter + cluster</text><text x="710" y="272" class="small">4. hull + minimal OBB</text>
+<text x="710" y="302" class="small">5. quality checks</text><text x="710" y="332" class="small">6. multi-frame aggregation</text>
+<text x="710" y="352" class="small">7. append-only JSONL outbox</text>
+<text x="710" y="377" class="small">+ deterministic measurement_id</text>
+<path d="M600 235 H680" class="signal"/>
+
+<rect x="1000" y="175" width="150" height="120" rx="6" class="hardware"/>
+<text x="1075" y="220" text-anchor="middle" class="label">WMS</text><text x="1075" y="246" text-anchor="middle" class="small">JSON schema: PoC</text><text x="1075" y="270" text-anchor="middle" class="small">HTTPS/mTLS: proposed</text>
+<path d="M940 235 H1000" class="signal"/>
+
+<rect x="680" y="500" width="260" height="100" rx="6" class="process"/>
+<text x="810" y="537" text-anchor="middle" class="label">Production monitoring</text><text x="810" y="567" text-anchor="middle" class="small">proposed: gaps, fill, saturation, MAD</text>
+<path d="M810 415 V500" class="signal"/>
+<text x="60" y="690" class="small">Real-time цикл локальный. JSONL outbox содержит deterministic measurement_id для идемпотентной доставки.</text>
+</svg>

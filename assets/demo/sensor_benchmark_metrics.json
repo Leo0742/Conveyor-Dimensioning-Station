@@ -1,0 +1,49 @@
+{
+  "scenario_count": 7,
+  "expected_valid_count": 7,
+  "correct_ok_count": 7,
+  "wrong_ok_count": 0,
+  "rejected_expected_valid_count": 0,
+  "acceptance_rate": 1.0,
+  "precision_among_accepted": 1.0,
+  "correct_measurement_rate": 1.0,
+  "invalid_rate": 0.0,
+  "expected_reject_count": 0,
+  "correctly_rejected_expected_reject_count": 0,
+  "false_ok_count": 0,
+  "synthetic_rejection_stress_false_ok_rate": 0.0,
+  "absolute_error_mm": {
+    "length": {
+      "p50": 0.6828470955717307,
+      "p95": 4.675279443390037,
+      "p99": 5.3127228913418225
+    },
+    "width": {
+      "p50": 0.4692946888066558,
+      "p95": 2.5704899820303044,
+      "p99": 2.9554392014720703
+    },
+    "height": {
+      "p50": 0.5369816070579141,
+      "p95": 1.311049262605835,
+      "p99": 1.381716599797474
+    }
+  },
+  "relative_error_percent": {
+    "length": {
+      "p50": 0.7312466365868531,
+      "p95": 4.682413098683859,
+      "p99": 4.916179894885695
+    },
+    "width": {
+      "p50": 1.4995896019630703,
+      "p95": 4.799201324952452,
+      "p99": 5.398642456019598
+    },
+    "height": {
+      "p50": 1.6464655689329355,
+      "p95": 3.7458550360166716,
+      "p99": 3.9477617137070684
+    }
+  }
+}

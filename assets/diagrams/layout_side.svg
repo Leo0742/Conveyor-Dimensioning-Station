@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<style>
+  text { font-family: 'DejaVu Sans', Arial, sans-serif; fill: #17212b; }
+  .title { font-size: 28px; font-weight: 700; }
+  .label { font-size: 18px; }
+  .small { font-size: 15px; fill: #455a64; }
+  .hardware { fill: #e8f1fb; stroke: #145ea8; stroke-width: 2.5; }
+  .process { fill: #f4f6f8; stroke: #455a64; stroke-width: 2; }
+  .signal { stroke: #1565c0; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+  .dimension { stroke: #c62828; stroke-width: 2; fill: none; marker-start: url(#dim); marker-end: url(#dim); }
+  .laser { stroke: #d32f2f; stroke-width: 3; fill: none; }
+  .dash { stroke-dasharray: 8 6; }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1565c0"/></marker>
+  <marker id="dim" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,4 L8,0 L8,8 z" fill="#c62828"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="60" y="54" class="title">Измерительная станция — вид сбоку (Y–Z)</text>
+<line x1="95" y1="610" x2="1110" y2="610" stroke="#263238" stroke-width="14"/>
+<line x1="95" y1="628" x2="1110" y2="628" stroke="#90a4ae" stroke-width="8"/>
+<text x="90" y="665" class="label">Конвейер, v = 1 m/s</text>
+<path d="M300 665 H410" class="signal"/>
+
+<rect x="535" y="82" width="130" height="68" rx="4" class="hardware"/>
+<circle cx="570" cy="150" r="8" fill="#145ea8"/><circle cx="630" cy="150" r="8" fill="#145ea8"/>
+<line x1="600" y1="150" x2="600" y2="610" class="laser"/>
+<text x="600" y="113" text-anchor="middle" class="label">Gocator 2880</text>
+<text x="600" y="137" text-anchor="middle" class="small">две камеры</text>
+<text x="615" y="205" class="small">фиксированная X-Z плоскость профиля</text>
+
+<polygon points="505,610 505,400 695,400 695,610" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
+<text x="600" y="440" text-anchor="middle" class="label">товар</text>
+<text x="600" y="466" text-anchor="middle" class="small">до 300 mm</text>
+
+<line x1="700" y1="150" x2="700" y2="610" class="dimension"/>
+<text x="716" y="390" class="label" fill="#c62828">917 mm</text>
+<line x1="505" y1="380" x2="695" y2="380" class="dimension"/>
+<text x="600" y="365" text-anchor="middle" class="small">до 400 mm по ходу</text>
+
+<line x1="350" y1="580" x2="850" y2="580" class="dimension"/>
+<text x="600" y="566" text-anchor="middle" class="label">700 mm формируются движением по Y</text>
+<line x1="350" y1="250" x2="350" y2="610" stroke="#607d8b" stroke-width="2" class="dash"/>
+<line x1="850" y1="250" x2="850" y2="610" stroke="#607d8b" stroke-width="2" class="dash"/>
+
+<line x1="170" y1="250" x2="170" y2="610" stroke="#7b1fa2" stroke-width="4"/>
+<circle cx="150" cy="575" r="13" fill="#7b1fa2"/><circle cx="190" cy="575" r="13" fill="#7b1fa2"/>
+<text x="170" y="232" text-anchor="middle" class="label">SICK WLF4FI</text>
+<line x1="170" y1="285" x2="350" y2="285" class="dimension"/>
+<text x="260" y="270" text-anchor="middle" class="small">250 mm до зоны</text>
+
+<circle cx="980" cy="625" r="35" fill="#e8f1fb" stroke="#145ea8" stroke-width="3"/>
+<circle cx="980" cy="625" r="7" fill="#145ea8"/>
+<text x="980" y="690" text-anchor="middle" class="label">SICK DFS60 + мерное колесо</text>
+<text x="60" y="715" class="small">PRELIMINARY CALCULATED LAYOUT: FOV 680 mm на Z=300 mm, запас 40 mm/сторону.</text>
+<text x="60" y="738" class="small">Финальная установка определяется factory calibration model и проверкой лазерной безопасности.</text>
+</svg>

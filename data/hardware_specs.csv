@@ -1,0 +1,5 @@
+candidate,configuration,points_per_profile,x_resolution_mm,z_resolution_mm,z_linearity_percent_mr,z_linearity_mm,z_repeatability_mm,clearance_mm,measurement_range_mm,fov_near_mm,fov_far_mm,scan_rate_hz,interface,source
+LMI Gocator 2880,1 dual-camera profiler,1280,0.375-1.100,0.092-0.488,0.04,0.320,not published,350,800,390,1260,380-5000,Gigabit Ethernet,https://lmi3d.com/wp-content/uploads/2024/09/DATASHEET_Gocator_2880_Wood_US.pdf
+LMI Gocator 2490,1 profiler,1920,0.250-1.100,not published,0.04,0.610,0.012,350,1525,390,2000,370 full view; 800 at 1m x 2m; up to 5000,Gigabit Ethernet,https://lmi3d.com/wp-content/uploads/2020-02/DATASHEET_Gocator_2490_US_WEB.pdf
+LMI Gocator 2450,3 synchronized profilers,1800,0.100-0.255,not published,0.01,0.055,0.002,270,550,145,425,270-5000,Gigabit Ethernet,https://lmi3d.com/wp-content/uploads/2024/02/DATASHEET_Gocator_2400_US_WEB-1.pdf
+RealSense D457,2 synchronized active-stereo cameras,1280 pixels,1.186 estimated at 0.8m,depth quantization not specified,n/a,n/a,520 minimum depth,600-6000 ideal range,n/a,1518 estimated width at 0.8m,up to 90 fps,GMSL/FAKRA,https://www.realsenseai.com/products/d457-gmsl-fakra/

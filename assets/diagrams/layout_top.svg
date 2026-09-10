@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<style>
+  text { font-family: 'DejaVu Sans', Arial, sans-serif; fill: #17212b; }
+  .title { font-size: 28px; font-weight: 700; }
+  .label { font-size: 18px; }
+  .small { font-size: 15px; fill: #455a64; }
+  .hardware { fill: #e8f1fb; stroke: #145ea8; stroke-width: 2.5; }
+  .process { fill: #f4f6f8; stroke: #455a64; stroke-width: 2; }
+  .signal { stroke: #1565c0; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+  .dimension { stroke: #c62828; stroke-width: 2; fill: none; marker-start: url(#dim); marker-end: url(#dim); }
+  .laser { stroke: #d32f2f; stroke-width: 3; fill: none; }
+  .dash { stroke-dasharray: 8 6; }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1565c0"/></marker>
+  <marker id="dim" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,4 L8,0 L8,8 z" fill="#c62828"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="60" y="54" class="title">Измерительная станция — вид сверху (X–Y)</text>
+<rect x="360" y="180" width="480" height="420" fill="#eceff1" stroke="#263238" stroke-width="4"/>
+<text x="600" y="630" text-anchor="middle" class="label">ширина ленты 600 mm</text>
+<line x1="360" y1="615" x2="840" y2="615" class="dimension"/>
+
+<rect x="320" y="180" width="560" height="420" fill="none" stroke="#607d8b" stroke-width="2" class="dash"/>
+<text x="895" y="400" class="label">зона 700 mm</text>
+<line x1="880" y1="180" x2="880" y2="600" class="dimension"/>
+
+<line x1="230" y1="390" x2="970" y2="390" class="laser"/>
+<text x="985" y="396" class="label">scan line</text>
+<line x1="230" y1="420" x2="970" y2="420" class="dimension"/>
+<text x="600" y="450" text-anchor="middle" class="small">FOV на ленте ≈1006 mm; 680 mm на Z=300 mm</text>
+<text x="600" y="476" text-anchor="middle" class="small">запас по 40 mm с каждой стороны ленты</text>
+
+<g transform="rotate(24 600 420)">
+  <rect x="535" y="370" width="130" height="100" fill="#fff3e0" stroke="#ef6c00" stroke-width="3"/>
+</g>
+<text x="600" y="520" text-anchor="middle" class="label">произвольный yaw</text>
+
+<line x1="300" y1="80" x2="900" y2="80" stroke="#7b1fa2" stroke-width="4"/>
+<circle cx="330" cy="80" r="12" fill="#7b1fa2"/><circle cx="870" cy="80" r="12" fill="#7b1fa2"/>
+<text x="930" y="87" class="label">WLF4FI trigger</text>
+<line x1="900" y1="80" x2="900" y2="180" class="dimension"/>
+<text x="920" y="135" class="small">250 mm</text>
+
+<path d="M1030 260 V160" class="signal"/>
+<text x="1050" y="215" class="label">Y</text>
+<path d="M1030 260 H1130" class="signal"/>
+<text x="1140" y="267" class="label">X</text>
+<text x="60" y="690" class="small">PRELIMINARY CALCULATED LAYOUT; один Gocator 2880 по центру, две камеры смотрят на одну лазерную линию.</text>
+<text x="60" y="715" class="small">Фактическая граница FOV и координаты монтажа проверяются по factory calibration model.</text>
+</svg>

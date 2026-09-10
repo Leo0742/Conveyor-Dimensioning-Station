@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "conveyor-dimensioning"
+version = "0.1.0"
+description = "Synthetic geometry prototype for conveyor product dimensioning"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = {text = "MIT"}
+dependencies = [
+  "numpy>=2.0,<3",
+  "scipy>=1.14,<2",
+  "pydantic>=2.8,<3",
+  "matplotlib>=3.9,<4",
+  "pillow>=11,<13",
+  "imageio>=2.36,<3",
+  "reportlab>=4.2,<5",
+  "svglib>=1.5,<2",
+  "pypdf>=6,<7",
+]
+
+[project.optional-dependencies]
+open3d = ["open3d>=0.19,<0.20"]
+
+[dependency-groups]
+dev = ["pytest>=8.3,<10", "ruff>=0.9,<1"]
+
+[project.scripts]
+conveyor-dimensioning = "conveyor_dimensioning.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/conveyor_dimensioning"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

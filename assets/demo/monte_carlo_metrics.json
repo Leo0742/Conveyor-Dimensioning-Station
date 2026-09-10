@@ -1,0 +1,252 @@
+{
+  "seed": 20261017,
+  "development_seed": 1337,
+  "configuration": "FROZEN BEFORE FINAL SEED",
+  "overall": {
+    "scenario_count": 500,
+    "expected_valid_count": 475,
+    "correct_ok_count": 427,
+    "wrong_ok_count": 27,
+    "rejected_expected_valid_count": 21,
+    "acceptance_rate": 0.9557894736842105,
+    "precision_among_accepted": 0.9405286343612335,
+    "correct_measurement_rate": 0.8989473684210526,
+    "invalid_rate": 0.04421052631578947,
+    "expected_reject_count": 25,
+    "correctly_rejected_expected_reject_count": 25,
+    "false_ok_count": 0,
+    "synthetic_rejection_stress_false_ok_rate": 0.0,
+    "absolute_error_mm": {
+      "length": {
+        "p50": 0.7954564714428152,
+        "p95": 11.603424192345768,
+        "p99": 19.300190439993138
+      },
+      "width": {
+        "p50": 0.6298449485554514,
+        "p95": 6.998756026010818,
+        "p99": 15.560391171665566
+      },
+      "height": {
+        "p50": 0.7810136091997357,
+        "p95": 2.61453834282109,
+        "p99": 3.1279968434288588
+      }
+    },
+    "relative_error_percent": {
+      "length": {
+        "p50": 0.6603620023766394,
+        "p95": 4.769527163743799,
+        "p99": 8.673241692141303
+      },
+      "width": {
+        "p50": 0.6855012941836802,
+        "p95": 5.205382399066856,
+        "p99": 7.140445639892115
+      },
+      "height": {
+        "p50": 1.5541101520452956,
+        "p95": 5.959025700010863,
+        "p99": 10.151010668754466
+      }
+    }
+  },
+  "subsets": {
+    "yaw_only": {
+      "scenario_count": 125,
+      "expected_valid_count": 125,
+      "correct_ok_count": 125,
+      "wrong_ok_count": 0,
+      "rejected_expected_valid_count": 0,
+      "acceptance_rate": 1.0,
+      "precision_among_accepted": 1.0,
+      "correct_measurement_rate": 1.0,
+      "invalid_rate": 0.0,
+      "expected_reject_count": 0,
+      "correctly_rejected_expected_reject_count": 0,
+      "false_ok_count": 0,
+      "synthetic_rejection_stress_false_ok_rate": 0.0,
+      "absolute_error_mm": {
+        "length": {
+          "p50": 0.6607705304953129,
+          "p95": 1.1709568352030146,
+          "p99": 1.3656510408459317
+        },
+        "width": {
+          "p50": 0.456866355659713,
+          "p95": 0.9591606922278912,
+          "p99": 1.2328871872031857
+        },
+        "height": {
+          "p50": 0.6432361199198482,
+          "p95": 1.0281872620287664,
+          "p99": 1.1279149296096773
+        }
+      },
+      "relative_error_percent": {
+        "length": {
+          "p50": 0.2644617231474518,
+          "p95": 0.5710295055450879,
+          "p99": 0.6782868031643344
+        },
+        "width": {
+          "p50": 0.2448075283822331,
+          "p95": 0.9116286657660804,
+          "p99": 1.6751942425442177
+        },
+        "height": {
+          "p50": 0.6047855813363902,
+          "p95": 2.4673411585839293,
+          "p99": 6.38420200863523
+        }
+      }
+    },
+    "tilted_irregular": {
+      "scenario_count": 125,
+      "expected_valid_count": 125,
+      "correct_ok_count": 90,
+      "wrong_ok_count": 16,
+      "rejected_expected_valid_count": 19,
+      "acceptance_rate": 0.848,
+      "precision_among_accepted": 0.8490566037735849,
+      "correct_measurement_rate": 0.72,
+      "invalid_rate": 0.152,
+      "expected_reject_count": 0,
+      "correctly_rejected_expected_reject_count": 0,
+      "false_ok_count": 0,
+      "synthetic_rejection_stress_false_ok_rate": 0.0,
+      "absolute_error_mm": {
+        "length": {
+          "p50": 3.5909372994278925,
+          "p95": 15.39154799112309,
+          "p99": 27.290970021804906
+        },
+        "width": {
+          "p50": 1.2977507662205667,
+          "p95": 12.695941443155142,
+          "p99": 19.275703761438056
+        },
+        "height": {
+          "p50": 1.198969495136021,
+          "p95": 2.921501723716297,
+          "p99": 3.6258391487993165
+        }
+      },
+      "relative_error_percent": {
+        "length": {
+          "p50": 1.451512091915708,
+          "p95": 5.324186438157381,
+          "p99": 8.684275151022328
+        },
+        "width": {
+          "p50": 1.0749598078221727,
+          "p95": 6.511343703641827,
+          "p99": 7.434181353225547
+        },
+        "height": {
+          "p50": 1.331946772651368,
+          "p95": 7.991266370467983,
+          "p99": 13.725376079683592
+        }
+      }
+    },
+    "small_object": {
+      "scenario_count": 125,
+      "expected_valid_count": 125,
+      "correct_ok_count": 123,
+      "wrong_ok_count": 0,
+      "rejected_expected_valid_count": 2,
+      "acceptance_rate": 0.984,
+      "precision_among_accepted": 1.0,
+      "correct_measurement_rate": 0.984,
+      "invalid_rate": 0.016,
+      "expected_reject_count": 0,
+      "correctly_rejected_expected_reject_count": 0,
+      "false_ok_count": 0,
+      "synthetic_rejection_stress_false_ok_rate": 0.0,
+      "absolute_error_mm": {
+        "length": {
+          "p50": 0.565660968116994,
+          "p95": 1.1092742424740851,
+          "p99": 1.4339739484583371
+        },
+        "width": {
+          "p50": 0.5404972893903448,
+          "p95": 1.0444543117792977,
+          "p99": 1.356001983595835
+        },
+        "height": {
+          "p50": 0.4913784912250634,
+          "p95": 0.7975346706137101,
+          "p99": 0.9542967448526817
+        }
+      },
+      "relative_error_percent": {
+        "length": {
+          "p50": 1.8312625362887895,
+          "p95": 3.893021626634076,
+          "p99": 5.8361968154221495
+        },
+        "width": {
+          "p50": 2.2038954719765997,
+          "p95": 5.776750979482228,
+          "p99": 8.032185137615294
+        },
+        "height": {
+          "p50": 2.987204144895927,
+          "p95": 5.949978104172026,
+          "p99": 7.005908288341528
+        }
+      }
+    },
+    "noisy_incomplete": {
+      "scenario_count": 125,
+      "expected_valid_count": 100,
+      "correct_ok_count": 89,
+      "wrong_ok_count": 11,
+      "rejected_expected_valid_count": 0,
+      "acceptance_rate": 1.0,
+      "precision_among_accepted": 0.89,
+      "correct_measurement_rate": 0.89,
+      "invalid_rate": 0.0,
+      "expected_reject_count": 25,
+      "correctly_rejected_expected_reject_count": 25,
+      "false_ok_count": 0,
+      "synthetic_rejection_stress_false_ok_rate": 0.0,
+      "absolute_error_mm": {
+        "length": {
+          "p50": 1.2949919086276438,
+          "p95": 15.103738794921805,
+          "p99": 20.058832393950905
+        },
+        "width": {
+          "p50": 1.143686892102938,
+          "p95": 6.544448603193442,
+          "p99": 13.207966755238155
+        },
+        "height": {
+          "p50": 1.745427211103916,
+          "p95": 2.8898496877240785,
+          "p99": 3.209482949884015
+        }
+      },
+      "relative_error_percent": {
+        "length": {
+          "p50": 0.5945619654513699,
+          "p95": 7.59478238283199,
+          "p99": 9.047915097521718
+        },
+        "width": {
+          "p50": 0.7007887860217079,
+          "p95": 4.57150855468427,
+          "p99": 6.270898409290302
+        },
+        "height": {
+          "p50": 1.7915540301230963,
+          "p95": 6.410980375867802,
+          "p99": 10.083848012796404
+        }
+      }
+    }
+  }
+}
