@@ -2,37 +2,22 @@ name: CI
 
 on:
   push:
-    branches: [main]
   pull_request:
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+permissions:
+  contents: read
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Install Cairo build dependency
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcairo2-dev pkg-config
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-
-      - name: Install dependencies
-        run: uv sync --frozen --python 3.12
-
-      - name: Ruff
-        run: uv run ruff check .
-
-      - name: Tests
-        run: uv run pytest -q
+      - run: uv sync --frozen --python 3.12
+      - run: uv run ruff check .
+      - run: uv run pytest -q

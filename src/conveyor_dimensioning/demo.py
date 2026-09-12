@@ -65,7 +65,15 @@ def run_demo(output_dir: str | Path, *, seed: int = 42) -> DimensionResult:
     box = dominant_top_plane_box(augmented, seed=measurement_seed)
 
     np.savez_compressed(destination / "sample_scene.npz", points_mm=scene)
-    plot_measurement(scene, isolated, box, destination / "measurement.png")
+    plot_measurement(
+        scene,
+        isolated,
+        box,
+        destination / "measurement.png",
+        reported_dimensions_mm=np.array(
+            [result.length_mm, result.width_mm, result.height_mm]
+        ),
+    )
 
     moving_product = product + np.array([0.0, -300.0, 0.0])
     frames = simulate_sequence(

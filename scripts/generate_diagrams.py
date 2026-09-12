@@ -12,6 +12,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, Rectangle
+from matplotlib.transforms import Bbox
 
 from conveyor_dimensioning.hardware import GOCATOR_2880, calculate_linear_fov_layout
 
@@ -46,45 +47,57 @@ def _side_view() -> str:
     layout = calculate_linear_fov_layout(GOCATOR_2880, target_top_fov_mm=680.0)
     return _svg(
         f"""
-<text x="60" y="54" class="title">Измерительная станция — вид сбоку (Y–Z)</text>
-<line x1="95" y1="610" x2="1110" y2="610" stroke="#263238" stroke-width="14"/>
-<line x1="95" y1="628" x2="1110" y2="628" stroke="#90a4ae" stroke-width="8"/>
-<text x="90" y="665" class="label">Конвейер, v = 1 m/s</text>
-<path d="M300 665 H410" class="signal"/>
+<defs>
+  <marker id="dim-secondary" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,4 L8,0 L8,8 z" fill="#546e7a"/></marker>
+</defs>
+<text x="40" y="45" class="title">Измерительная станция — вид сбоку (Y-Z)</text>
+<text x="40" y="78" class="small">Один фиксированный профиль X-Z; 3D-облако накапливается при движении товара по Y.</text>
 
-<rect x="535" y="82" width="130" height="68" rx="4" class="hardware"/>
-<circle cx="570" cy="150" r="8" fill="#145ea8"/><circle cx="630" cy="150" r="8" fill="#145ea8"/>
-<line x1="600" y1="150" x2="600" y2="610" class="laser"/>
-<text x="600" y="113" text-anchor="middle" class="label">Gocator 2880</text>
-<text x="600" y="137" text-anchor="middle" class="small">две камеры</text>
-<text x="615" y="205" class="small">фиксированная X-Z плоскость профиля</text>
+<rect x="455" y="110" width="190" height="84" rx="4" class="hardware"/>
+<text x="550" y="143" text-anchor="middle" class="label">Gocator 2880</text>
+<text x="550" y="171" text-anchor="middle" class="small">две камеры</text>
+<circle cx="515" cy="211" r="7" fill="#145ea8"/><circle cx="585" cy="211" r="7" fill="#145ea8"/>
+<line x1="550" y1="219" x2="550" y2="370" class="laser"/>
+<text x="590" y="244" class="small">лазерный профиль X-Z</text>
 
-<polygon points="505,610 505,400 695,400 695,610" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
-<text x="600" y="440" text-anchor="middle" class="label">товар</text>
-<text x="600" y="466" text-anchor="middle" class="small">до 300 mm</text>
+<line x1="280" y1="290" x2="280" y2="570" stroke="#607d8b" stroke-width="2" class="dash"/>
+<line x1="720" y1="290" x2="720" y2="570" stroke="#607d8b" stroke-width="2" class="dash"/>
+<line x1="280" y1="320" x2="520" y2="320" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<line x1="580" y1="320" x2="720" y2="320" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<rect x="390" y="252" width="220" height="53" rx="3" fill="white"/>
+<text x="500" y="275" text-anchor="middle" class="label">700 мм</text>
+<text x="500" y="299" text-anchor="middle" class="small">окно накопления профилей</text>
 
-<line x1="700" y1="150" x2="700" y2="610" class="dimension"/>
-<text x="716" y="390" class="label" fill="#c62828">{layout.mount_height_above_belt_mm:.0f} mm</text>
-<line x1="505" y1="380" x2="695" y2="380" class="dimension"/>
-<text x="600" y="365" text-anchor="middle" class="small">до 400 mm по ходу</text>
+<rect x="470" y="370" width="160" height="200" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
+<text x="550" y="458" text-anchor="middle" class="label">Товар</text>
+<text x="550" y="484" text-anchor="middle" class="small">h ≤ 300 мм</text>
 
-<line x1="350" y1="580" x2="850" y2="580" class="dimension"/>
-<text x="600" y="566" text-anchor="middle" class="label">700 mm формируются движением по Y</text>
-<line x1="350" y1="250" x2="350" y2="610" stroke="#607d8b" stroke-width="2" class="dash"/>
-<line x1="850" y1="250" x2="850" y2="610" stroke="#607d8b" stroke-width="2" class="dash"/>
+<line x1="665" y1="219" x2="805" y2="219" stroke="#90a4ae" stroke-width="1.5"/>
+<line x1="720" y1="570" x2="805" y2="570" stroke="#90a4ae" stroke-width="1.5"/>
+<line x1="805" y1="219" x2="805" y2="570" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<text x="850" y="372" class="label">≈{layout.mount_height_above_belt_mm:.0f} мм</text>
+<text x="850" y="397" class="small">расчётная высота</text>
 
-<line x1="170" y1="250" x2="170" y2="610" stroke="#7b1fa2" stroke-width="4"/>
-<circle cx="150" cy="575" r="13" fill="#7b1fa2"/><circle cx="190" cy="575" r="13" fill="#7b1fa2"/>
-<text x="170" y="232" text-anchor="middle" class="label">SICK WLF4FI</text>
-<line x1="170" y1="285" x2="350" y2="285" class="dimension"/>
-<text x="260" y="270" text-anchor="middle" class="small">250 mm до зоны</text>
+<line x1="140" y1="370" x2="140" y2="570" stroke="#7b1fa2" stroke-width="4"/>
+<circle cx="123" cy="550" r="12" fill="#7b1fa2"/><circle cx="157" cy="550" r="12" fill="#7b1fa2"/>
+<text x="140" y="350" text-anchor="middle" class="label">SICK WLF4FI</text>
+<line x1="140" y1="420" x2="280" y2="420" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<text x="210" y="405" text-anchor="middle" class="small">250 мм</text>
 
-<circle cx="980" cy="625" r="35" fill="#e8f1fb" stroke="#145ea8" stroke-width="3"/>
-<circle cx="980" cy="625" r="7" fill="#145ea8"/>
-<text x="980" y="690" text-anchor="middle" class="label">SICK DFS60 + мерное колесо</text>
-<text x="60" y="715" class="small">PRELIMINARY CALCULATED LAYOUT: FOV {layout.target_top_fov_mm:.0f} mm на Z=300 mm, запас {layout.lateral_margin_per_side_mm:.0f} mm/сторону.</text>
-<text x="60" y="738" class="small">Финальная установка определяется factory calibration model и проверкой лазерной безопасности.</text>
-"""
+<line x1="70" y1="570" x2="1030" y2="570" stroke="#263238" stroke-width="14"/>
+<line x1="70" y1="588" x2="1030" y2="588" stroke="#90a4ae" stroke-width="8"/>
+<text x="70" y="632" class="label">Конвейер, v = 1 м/с</text>
+<path d="M300 626 H400" class="signal"/><text x="417" y="632" class="label">Y</text>
+
+<circle cx="930" cy="620" r="28" fill="#e8f1fb" stroke="#145ea8" stroke-width="3"/>
+<circle cx="930" cy="620" r="5" fill="#145ea8"/>
+<text x="930" y="674" text-anchor="middle" class="label">SICK DFS60</text>
+<text x="930" y="696" text-anchor="middle" class="small">мерное колесо</text>
+
+<text x="40" y="700" class="small">700 мм — путь товара во время накопления профилей, а не оптический FOV.</text>
+<text x="40" y="725" class="small">FOV {layout.target_top_fov_mm:.0f} мм относится к направлению X на высоте Z=300 мм.</text>
+""",
+        width=1100,
     )
 
 
@@ -92,39 +105,46 @@ def _top_view() -> str:
     layout = calculate_linear_fov_layout(GOCATOR_2880, target_top_fov_mm=680.0)
     return _svg(
         f"""
-<text x="60" y="54" class="title">Измерительная станция — вид сверху (X–Y)</text>
-<rect x="360" y="180" width="480" height="420" fill="#eceff1" stroke="#263238" stroke-width="4"/>
-<text x="600" y="630" text-anchor="middle" class="label">ширина ленты 600 mm</text>
-<line x1="360" y1="615" x2="840" y2="615" class="dimension"/>
+<defs>
+  <marker id="dim-secondary" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,4 L8,0 L8,8 z" fill="#546e7a"/></marker>
+</defs>
+<text x="40" y="45" class="title">Измерительная станция — вид сверху (X-Y)</text>
+<text x="40" y="78" class="small">Товар движется по Y; последовательные поперечные профили формируют 3D-облако.</text>
 
-<rect x="320" y="180" width="560" height="420" fill="none" stroke="#607d8b" stroke-width="2" class="dash"/>
-<text x="895" y="400" class="label">зона 700 mm</text>
-<line x1="880" y1="180" x2="880" y2="600" class="dimension"/>
+<text x="550" y="120" text-anchor="middle" class="label">FOV при Z=300 мм: {layout.target_top_fov_mm:.0f} мм</text>
+<text x="550" y="145" text-anchor="middle" class="small">по {layout.lateral_margin_per_side_mm:.0f} мм запаса относительно ленты</text>
+<line x1="210" y1="165" x2="890" y2="165" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
 
-<line x1="230" y1="390" x2="970" y2="390" class="laser"/>
-<text x="985" y="396" class="label">scan line</text>
-<line x1="230" y1="420" x2="970" y2="420" class="dimension"/>
-<text x="600" y="450" text-anchor="middle" class="small">FOV на ленте ≈{layout.belt_fov_mm:.0f} mm; {layout.target_top_fov_mm:.0f} mm на Z=300 mm</text>
-<text x="600" y="476" text-anchor="middle" class="small">запас по {layout.lateral_margin_per_side_mm:.0f} mm с каждой стороны ленты</text>
+<rect x="250" y="175" width="600" height="400" fill="#eceff1"/>
+<line x1="250" y1="175" x2="250" y2="575" stroke="#263238" stroke-width="4"/>
+<line x1="850" y1="175" x2="850" y2="575" stroke="#263238" stroke-width="4"/>
+<line x1="210" y1="175" x2="210" y2="575" stroke="#607d8b" stroke-width="2" class="dash"/>
+<line x1="890" y1="175" x2="890" y2="575" stroke="#607d8b" stroke-width="2" class="dash"/>
 
-<g transform="rotate(24 600 420)">
-  <rect x="535" y="370" width="130" height="100" fill="#fff3e0" stroke="#ef6c00" stroke-width="3"/>
+<line x1="235" y1="230" x2="865" y2="230" stroke="#90a4ae" stroke-width="2" stroke-dasharray="14 6 3 6"/>
+<line x1="235" y1="520" x2="865" y2="520" stroke="#90a4ae" stroke-width="2" stroke-dasharray="14 6 3 6"/>
+<line x1="930" y1="230" x2="930" y2="520" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<text x="952" y="365" class="label">700 мм</text>
+<text x="952" y="390" class="small">окно накопления</text>
+
+<line x1="210" y1="370" x2="890" y2="370" class="laser"/>
+<g transform="rotate(24 550 370)">
+  <rect x="485" y="320" width="130" height="100" fill="#fff3e0" stroke="#ef6c00" stroke-width="3"/>
 </g>
-<text x="600" y="520" text-anchor="middle" class="label">произвольный yaw</text>
 
-<line x1="300" y1="80" x2="900" y2="80" stroke="#7b1fa2" stroke-width="4"/>
-<circle cx="330" cy="80" r="12" fill="#7b1fa2"/><circle cx="870" cy="80" r="12" fill="#7b1fa2"/>
-<text x="930" y="87" class="label">WLF4FI trigger</text>
-<line x1="900" y1="80" x2="900" y2="180" class="dimension"/>
-<text x="920" y="135" class="small">250 mm</text>
+<line x1="250" y1="600" x2="850" y2="600" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<text x="550" y="632" text-anchor="middle" class="label">600 мм — ширина ленты</text>
 
-<path d="M1030 260 V160" class="signal"/>
-<text x="1050" y="215" class="label">Y</text>
-<path d="M1030 260 H1130" class="signal"/>
-<text x="1140" y="267" class="label">X</text>
-<text x="60" y="690" class="small">PRELIMINARY CALCULATED LAYOUT; один Gocator 2880 по центру, две камеры смотрят на одну лазерную линию.</text>
-<text x="60" y="715" class="small">Фактическая граница FOV и координаты монтажа проверяются по factory calibration model.</text>
-"""
+<line x1="40" y1="660" x2="100" y2="660" class="laser"/>
+<text x="115" y="666" class="small">один профиль X-Z</text>
+
+<path d="M970 640 H1060" class="signal"/><text x="1072" y="646" class="label">X</text>
+<path d="M970 640 V570" class="signal"/><text x="988" y="583" class="label">Y</text>
+
+<text x="40" y="705" class="small">Товар движется по Y через неподвижную лазерную линию.</text>
+<text x="40" y="728" class="small">Последовательные профили образуют 3D-облако.</text>
+""",
+        width=1100,
     )
 
 
@@ -163,7 +183,7 @@ def _block_diagram() -> str:
     )
 
 
-def _png_axes(*, height: int = 760):
+def _png_axes(*, width: int = 1200, height: int = 760, compact: bool = False):
     plt.rcParams.update(
         {
             "font.family": "DejaVu Sans",
@@ -171,117 +191,331 @@ def _png_axes(*, height: int = 760):
             "figure.facecolor": "white",
         }
     )
-    figure, axis = plt.subplots(figsize=(12, height / 100), dpi=200)
-    axis.set_xlim(0, 1200)
+    figure, axis = plt.subplots(figsize=(width / 100, height / 100), dpi=200)
+    if compact:
+        figure.subplots_adjust(left=0.02, right=0.98, bottom=0.02, top=0.98)
+    axis.set_xlim(0, width)
     axis.set_ylim(0, height)
     axis.axis("off")
     return figure, axis
 
 
-def _save_png(figure, path: Path) -> None:
+def _expanded_bbox(text, renderer, padding_px: float = 3.0) -> Bbox:
+    box = text.get_window_extent(renderer=renderer)
+    return Bbox.from_extents(
+        box.x0 - padding_px,
+        box.y0 - padding_px,
+        box.x1 + padding_px,
+        box.y1 + padding_px,
+    )
+
+
+def _check_text_layout(
+    figure,
+    axis,
+    *,
+    diagram: str,
+    independent_pairs=(),
+    vertical_clearances=(),
+    forbidden_regions=(),
+) -> None:
+    """Fail generation when independently positioned annotations collide."""
+
+    figure.canvas.draw()
+    renderer = figure.canvas.get_renderer()
+    problems = []
+    for description, first, second in independent_pairs:
+        if _expanded_bbox(first, renderer).overlaps(_expanded_bbox(second, renderer)):
+            problems.append(description)
+    for description, text, x_data in vertical_clearances:
+        box = _expanded_bbox(text, renderer, padding_px=6.0)
+        x_display = axis.transData.transform((x_data, 0))[0]
+        if box.x0 <= x_display <= box.x1:
+            problems.append(description)
+    for description, text, patch in forbidden_regions:
+        if _expanded_bbox(text, renderer).overlaps(patch.get_window_extent(renderer=renderer)):
+            problems.append(description)
+    if problems:
+        raise RuntimeError(f"{diagram} layout collisions: {', '.join(problems)}")
+
+
+def _assert_text_inside_patch(figure, text, patch, *, padding_px: float, description: str) -> None:
+    figure.canvas.draw()
+    renderer = figure.canvas.get_renderer()
+    outer = patch.get_window_extent(renderer=renderer)
+    inner = text.get_window_extent(renderer=renderer)
+    contained = (
+        inner.x0 >= outer.x0 + padding_px
+        and inner.x1 <= outer.x1 - padding_px
+        and inner.y0 >= outer.y0 + padding_px
+        and inner.y1 <= outer.y1 - padding_px
+    )
+    if not contained:
+        raise RuntimeError(f"side geometry assertion failed: {description}")
+
+
+def _save_png(figure, path: Path, *, tight: bool = False) -> None:
+    extra = {"bbox_inches": "tight", "pad_inches": 0.12} if tight else {}
     figure.savefig(
         path,
         dpi=200,
         facecolor="white",
         metadata={"Software": "conveyor-dimensioning deterministic diagrams"},
+        **extra,
     )
     plt.close(figure)
 
 
 def _side_png(path: Path) -> None:
     layout = calculate_linear_fov_layout(GOCATOR_2880, target_top_fov_mm=680.0)
-    figure, axis = _png_axes()
-    axis.text(60, 705, "Измерительная станция — вид сбоку (Y–Z)", size=21, weight="bold")
-    axis.plot([85, 1110], [135, 135], color="#263238", linewidth=10)
-    axis.text(90, 80, "Конвейер, v = 1 m/s", size=14)
-    axis.add_patch(Rectangle((535, 610), 130, 68, facecolor="#e8f1fb", edgecolor="#145ea8", lw=2))
-    axis.text(600, 650, "Gocator 2880", ha="center", weight="bold")
-    axis.text(600, 625, "две камеры", ha="center", size=11, color="#455a64")
-    axis.plot([600, 600], [610, 135], color="#d32f2f", linewidth=2.5)
-    axis.text(615, 560, "фиксированная X-Z плоскость профиля", size=10, color="#455a64")
-    axis.add_patch(Rectangle((505, 135), 190, 210, facecolor="#fff3e0", edgecolor="#ef6c00", lw=2))
-    axis.text(600, 250, "товар\nдо 300 mm", ha="center", va="center")
-    axis.annotate(
-        "",
-        xy=(730, 610),
-        xytext=(730, 135),
-        arrowprops={"arrowstyle": "<->", "color": "#c62828", "lw": 1.8},
-    )
-    axis.text(748, 365, f"{layout.mount_height_above_belt_mm:.0f} mm", color="#c62828")
-    axis.axvline(350, ymin=0.18, ymax=0.70, color="#607d8b", ls="--")
-    axis.axvline(850, ymin=0.18, ymax=0.70, color="#607d8b", ls="--")
-    axis.annotate(
-        "",
-        xy=(850, 165),
-        xytext=(350, 165),
-        arrowprops={"arrowstyle": "<->", "color": "#c62828"},
-    )
-    axis.text(600, 180, "700 mm формируются движением по Y", ha="center")
-    axis.plot([170, 170], [135, 475], color="#7b1fa2", linewidth=3)
-    axis.scatter([155, 185], [150, 150], s=110, color="#7b1fa2", zorder=4)
-    axis.text(170, 495, "SICK WLF4FI", ha="center", weight="bold")
-    axis.annotate(
-        "",
-        xy=(350, 455),
-        xytext=(170, 455),
-        arrowprops={"arrowstyle": "<->", "color": "#c62828"},
-    )
-    axis.text(260, 470, "250 mm до зоны", ha="center", size=10)
-    axis.add_patch(plt.Circle((980, 105), 30, facecolor="#e8f1fb", edgecolor="#145ea8", lw=2))
-    axis.add_patch(plt.Circle((980, 105), 6, facecolor="#145ea8"))
-    axis.text(980, 55, "SICK DFS60 + мерное колесо", ha="center", size=11)
-    axis.add_patch(
-        FancyArrowPatch(
-            (300, 75), (420, 75), arrowstyle="->", mutation_scale=18, color="#1565c0", lw=2
-        )
-    )
-    axis.text(435, 75, "Y", va="center", weight="bold")
-    axis.text(
-        60,
-        28,
-        f"PRELIMINARY CALCULATED LAYOUT: FOV {layout.target_top_fov_mm:.0f} mm на Z=300 mm; "
-        f"запас {layout.lateral_margin_per_side_mm:.0f} mm/сторону. Проверить factory calibration model.",
-        size=10,
+    figure, axis = _png_axes(width=1100, compact=True)
+    title = axis.text(40, 715, "Измерительная станция — вид сбоку (Y-Z)", size=21, weight="bold")
+    subtitle = axis.text(
+        40,
+        682,
+        "Один фиксированный профиль X-Z; 3D-облако накапливается при движении товара по Y.",
+        size=11,
         color="#455a64",
     )
-    _save_png(figure, path)
+    sensor_x, sensor_y = 455.0, 555.0
+    sensor_width, sensor_height = 190.0, 84.0
+    sensor_box = Rectangle(
+        (sensor_x, sensor_y),
+        sensor_width,
+        sensor_height,
+        facecolor="#e8f1fb",
+        edgecolor="#145ea8",
+        lw=2,
+    )
+    axis.add_patch(sensor_box)
+    gocator = axis.text(550, 608, "Gocator 2880", ha="center", va="center", size=13, weight="bold")
+    camera_text = axis.text(550, 580, "две камеры", ha="center", va="center", size=10.5, color="#455a64")
+    camera_radius = 7.0
+    camera_y = 538.0
+    camera_centers = (515.0, 585.0)
+    for camera_x in camera_centers:
+        axis.add_patch(plt.Circle((camera_x, camera_y), camera_radius, facecolor="#145ea8", edgecolor="none", zorder=4))
+    laser_x = 550.0
+    laser_top_y = 530.0
+    axis.plot([laser_x, laser_x], [laser_top_y, 390], color="#d32f2f", linewidth=2.3)
+    laser_label = axis.text(
+        590,
+        512,
+        "лазерный профиль X-Z",
+        va="center",
+        size=11,
+        color="#455a64",
+        zorder=5,
+    )
+
+    axis.plot([280, 280], [190, 470], color="#607d8b", ls="--", lw=1.4)
+    axis.plot([720, 720], [190, 470], color="#607d8b", ls="--", lw=1.4)
+    axis.annotate(
+        "",
+        xy=(520, 440),
+        xytext=(280, 440),
+        arrowprops={"arrowstyle": "<->", "color": "#546e7a", "lw": 1.6},
+    )
+    axis.annotate(
+        "",
+        xy=(720, 440),
+        xytext=(580, 440),
+        arrowprops={"arrowstyle": "<->", "color": "#546e7a", "lw": 1.6},
+    )
+    window_midpoint = (280.0 + 720.0) / 2.0
+    window_label = axis.text(
+        window_midpoint,
+        474,
+        "700 мм\nокно накопления профилей",
+        ha="center",
+        size=11,
+        color="#455a64",
+        linespacing=1.1,
+        bbox={"facecolor": "white", "edgecolor": "none", "pad": 2.5},
+    )
+
+    product = Rectangle((470, 190), 160, 200, facecolor="#fff3e0", edgecolor="#ef6c00", lw=2)
+    axis.add_patch(product)
+    axis.text(550, 292, "Товар", ha="center", va="center", size=13)
+    axis.text(550, 264, "h ≤ 300 мм", ha="center", va="center", size=10.5, color="#455a64")
+
+    axis.plot([665, 805], [530, 530], color="#90a4ae", linewidth=1.3)
+    axis.plot([720, 805], [190, 190], color="#90a4ae", linewidth=1.3)
+    axis.annotate(
+        "",
+        xy=(805, 530),
+        xytext=(805, 190),
+        arrowprops={"arrowstyle": "<->", "color": "#546e7a", "lw": 1.7},
+    )
+    height_label = axis.text(850, 350, f"≈{layout.mount_height_above_belt_mm:.0f} мм\nрасчётная высота", size=11.5, linespacing=1.15)
+
+    axis.plot([140, 140], [190, 390], color="#7b1fa2", linewidth=3)
+    axis.scatter([123, 157], [210, 210], s=100, color="#7b1fa2", zorder=4)
+    wlf_label = axis.text(140, 410, "SICK WLF4FI", ha="center", weight="bold")
+    axis.annotate(
+        "",
+        xy=(280, 340),
+        xytext=(140, 340),
+        arrowprops={"arrowstyle": "<->", "color": "#546e7a", "lw": 1.5},
+    )
+    trigger_dimension = axis.text(210, 358, "250 мм", ha="center", size=10.5, color="#455a64")
+
+    axis.plot([70, 1030], [190, 190], color="#263238", linewidth=10)
+    axis.plot([70, 1030], [172, 172], color="#90a4ae", linewidth=5)
+    conveyor_label = axis.text(70, 120, "Конвейер, v = 1 м/с", size=13)
+    axis.add_patch(FancyArrowPatch((300, 116), (400, 116), arrowstyle="->", mutation_scale=18, color="#1565c0", lw=2))
+    axis.text(417, 116, "Y", va="center", weight="bold")
+
+    conveyor_bottom_y = 170.0
+    wheel_radius = 28.0
+    wheel_center_y = conveyor_bottom_y - wheel_radius
+    wheel = plt.Circle((930, wheel_center_y), wheel_radius, facecolor="#e8f1fb", edgecolor="#145ea8", lw=2)
+    axis.add_patch(wheel)
+    axis.add_patch(plt.Circle((930, wheel_center_y), 5, facecolor="#145ea8"))
+    dfs_label = axis.text(930, 78, "SICK DFS60\nмерное колесо", ha="center", va="center", size=10.5, linespacing=1.1)
+
+    bottom_note = axis.text(
+        40,
+        46,
+        f"700 мм — путь товара во время накопления профилей, а не оптический FOV.\nFOV {layout.target_top_fov_mm:.0f} мм относится к направлению X на высоте Z=300 мм.",
+        size=10.5,
+        color="#455a64",
+        linespacing=1.15,
+    )
+    _check_text_layout(
+        figure,
+        axis,
+        diagram="side",
+        independent_pairs=(
+            ("title/subtitle", title, subtitle),
+            ("subtitle/Gocator", subtitle, gocator),
+            ("700/917 labels", window_label, height_label),
+            ("WLF4FI/250 mm", wlf_label, trigger_dimension),
+            ("DFS60/conveyor", dfs_label, conveyor_label),
+            ("DFS60/note", dfs_label, bottom_note),
+        ),
+        vertical_clearances=(("917 label/right window boundary", height_label, 720),),
+        forbidden_regions=(
+            ("laser label/product", laser_label, product),
+            ("700 label/product", window_label, product),
+            ("DFS60 label/wheel", dfs_label, wheel),
+        ),
+    )
+    _assert_text_inside_patch(figure, gocator, sensor_box, padding_px=8.0, description="Gocator text outside sensor body")
+    _assert_text_inside_patch(figure, camera_text, sensor_box, padding_px=8.0, description="camera text outside sensor body")
+    if camera_y + camera_radius >= sensor_y:
+        raise RuntimeError("side geometry assertion failed: camera marker touches sensor body")
+    for camera_x in camera_centers:
+        camera_vertical_range = (camera_y - camera_radius, camera_y + camera_radius)
+        laser_vertical_range = (390.0, laser_top_y)
+        vertical_overlap = max(camera_vertical_range[0], laser_vertical_range[0]) <= min(camera_vertical_range[1], laser_vertical_range[1])
+        if abs(laser_x - camera_x) <= camera_radius and vertical_overlap:
+            raise RuntimeError("side geometry assertion failed: laser intersects camera marker")
+    wheel_bottom = wheel_center_y - wheel_radius
+    wheel_top = wheel_center_y + wheel_radius
+    belt_line_y_coordinates = (190.0, 172.0)
+    if wheel_top > conveyor_bottom_y + 0.1:
+        raise RuntimeError("side geometry assertion failed: wheel penetrates conveyor underside")
+    if any(wheel_bottom < line_y < wheel_top for line_y in belt_line_y_coordinates):
+        raise RuntimeError("side geometry assertion failed: conveyor line crosses wheel")
+    if abs(window_label.get_position()[0] - window_midpoint) > 0.1:
+        raise RuntimeError("side geometry assertion failed: 700 mm label is not centered")
+    _check_text_layout(
+        figure,
+        axis,
+        diagram="side dimensions",
+        vertical_clearances=(
+            ("laser label/height dimension", laser_label, 805),
+            ("917 label/dimension arrow", height_label, 805),
+            ("917 label/right window boundary", height_label, 720),
+        ),
+    )
+    _save_png(figure, path, tight=True)
 
 
 def _top_png(path: Path) -> None:
     layout = calculate_linear_fov_layout(GOCATOR_2880, target_top_fov_mm=680.0)
-    figure, axis = _png_axes()
-    axis.text(60, 680, "Измерительная станция — вид сверху (X–Y)", size=21, weight="bold")
-    axis.add_patch(Rectangle((360, 145), 480, 385, facecolor="#eceff1", edgecolor="#263238", lw=2.5))
-    axis.add_patch(Rectangle((320, 145), 560, 385, fill=False, edgecolor="#607d8b", lw=1.5, ls="--"))
-    axis.plot([180, 1020], [335, 335], color="#d32f2f", lw=2.5)
-    axis.add_patch(Rectangle((535, 285), 130, 100, angle=24, facecolor="#fff3e0", edgecolor="#ef6c00", lw=2))
-    axis.text(600, 105, "ширина ленты 600 mm", ha="center")
-    axis.text(900, 335, "зона 700 mm", rotation=90, va="center")
-    axis.text(
-        600,
-        600,
-        f"FOV на ленте ≈{layout.belt_fov_mm:.0f} mm; {layout.target_top_fov_mm:.0f} mm на Z=300 mm",
-        ha="center",
+    figure, axis = _png_axes(width=1100, compact=True)
+    title = axis.text(40, 715, "Измерительная станция — вид сверху (X-Y)", size=21, weight="bold")
+    subtitle = axis.text(40, 682, "Товар движется по Y; последовательные поперечные профили формируют 3D-облако.", size=11, color="#455a64")
+
+    fov_title = axis.text(550, 640, f"FOV при Z=300 мм: {layout.target_top_fov_mm:.0f} мм", ha="center", size=13)
+    fov_subtitle = axis.text(550, 615, f"по {layout.lateral_margin_per_side_mm:.0f} мм запаса относительно ленты", ha="center", size=10.5, color="#455a64")
+    axis.annotate("", xy=(890, 590), xytext=(210, 590), arrowprops={"arrowstyle": "<->", "color": "#546e7a", "lw": 1.7})
+
+    axis.add_patch(Rectangle((250, 185), 600, 390, facecolor="#eceff1", edgecolor="none"))
+    axis.plot([250, 250], [185, 575], color="#263238", linewidth=2.8)
+    axis.plot([850, 850], [185, 575], color="#263238", linewidth=2.8)
+    axis.plot([210, 210], [185, 575], color="#607d8b", ls="--", lw=1.5)
+    axis.plot([890, 890], [185, 575], color="#607d8b", ls="--", lw=1.5)
+
+    axis.plot([235, 865], [520, 520], color="#90a4ae", ls=(0, (7, 3, 1.5, 3)), lw=1.5)
+    axis.plot([235, 865], [230, 230], color="#90a4ae", ls=(0, (7, 3, 1.5, 3)), lw=1.5)
+    axis.annotate(
+        "",
+        xy=(930, 520),
+        xytext=(930, 230),
+        arrowprops={"arrowstyle": "<->", "color": "#546e7a", "lw": 1.7},
     )
-    axis.text(
-        600,
-        565,
-        f"запас по {layout.lateral_margin_per_side_mm:.0f} mm с каждой стороны ленты",
-        ha="center",
+    window_label = axis.text(952, 376, "700 мм\nокно накопления", va="center", size=11, linespacing=1.15)
+
+    axis.plot([210, 890], [370, 370], color="#d32f2f", linewidth=2.5)
+    product = Rectangle((485, 320), 130, 100, angle=24, rotation_point="center", facecolor="#fff3e0", edgecolor="#ef6c00", lw=2)
+    axis.add_patch(product)
+
+    axis.annotate(
+        "",
+        xy=(850, 155),
+        xytext=(250, 155),
+        arrowprops={"arrowstyle": "<->", "color": "#546e7a", "lw": 1.7},
+    )
+    belt_label = axis.text(550, 122, "600 мм — ширина ленты", ha="center", size=13)
+
+    axis.plot([40, 100], [94, 94], color="#d32f2f", linewidth=2.5)
+    legend = axis.text(115, 94, "один профиль X-Z", va="center", size=10.5, color="#455a64")
+
+    axis.add_patch(FancyArrowPatch((970, 110), (1060, 110), arrowstyle="->", mutation_scale=18, color="#1565c0", lw=2))
+    axis.add_patch(FancyArrowPatch((970, 110), (970, 180), arrowstyle="->", mutation_scale=18, color="#1565c0", lw=2))
+    axis_x = axis.text(1072, 110, "X", va="center", size=13)
+    axis_y = axis.text(988, 180, "Y", va="center", size=13)
+
+    bottom_note = axis.text(
+        40,
+        46,
+        "Товар движется по Y через неподвижную лазерную линию.\nПоследовательные профили образуют 3D-облако.",
+        size=10.5,
         color="#455a64",
+        linespacing=1.15,
     )
-    axis.add_patch(FancyArrowPatch((1000, 230), (1110, 230), arrowstyle="->", mutation_scale=18, color="#1565c0", lw=2))
-    axis.add_patch(FancyArrowPatch((1000, 230), (1000, 330), arrowstyle="->", mutation_scale=18, color="#1565c0", lw=2))
-    axis.text(1120, 230, "X", va="center")
-    axis.text(1000, 345, "Y", ha="center")
-    axis.text(
-        60,
-        28,
-        "PRELIMINARY CALCULATED LAYOUT; один Gocator 2880 по центру; две камеры наблюдают одну лазерную линию.",
-        size=10,
-        color="#455a64",
+    product_forbidden_texts = (
+        fov_title,
+        fov_subtitle,
+        legend,
+        window_label,
+        belt_label,
+        axis_x,
+        axis_y,
+        bottom_note,
     )
-    _save_png(figure, path)
+    _check_text_layout(
+        figure,
+        axis,
+        diagram="top",
+        independent_pairs=(
+            ("title/subtitle", title, subtitle),
+            ("FOV title/subtitle", fov_title, fov_subtitle),
+            ("FOV/legend", fov_subtitle, legend),
+            ("700/X axis", window_label, axis_x),
+            ("700/Y axis", window_label, axis_y),
+            ("X axis/note", axis_x, bottom_note),
+            ("Y axis/note", axis_y, bottom_note),
+        ),
+        forbidden_regions=tuple(
+            (f"annotation/product #{index}", text, product)
+            for index, text in enumerate(product_forbidden_texts, start=1)
+        ),
+    )
+    _save_png(figure, path, tight=True)
 
 
 def _block_png(path: Path) -> None:

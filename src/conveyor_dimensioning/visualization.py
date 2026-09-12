@@ -33,6 +33,8 @@ def plot_measurement(
     object_points_mm: np.ndarray,
     box: BoundingBox3D,
     output_path: str | Path,
+    *,
+    reported_dimensions_mm: np.ndarray | None = None,
 ) -> None:
     """Render the conveyor, observed product points and measured OBB."""
     scene = np.asarray(scene_points_mm)
@@ -65,7 +67,10 @@ def plot_measurement(
         edge = corners[[first, second]]
         axis.plot(edge[:, 0], edge[:, 1], edge[:, 2], color="#d32f2f", linewidth=2)
 
-    dimensions = np.sort(box.extents_mm)[::-1]
+    title_extents = box.extents_mm if reported_dimensions_mm is None else reported_dimensions_mm
+    dimensions = np.sort(np.asarray(title_extents, dtype=float))[::-1]
+    if dimensions.shape != (3,):
+        raise ValueError("reported_dimensions_mm must have shape (3,)")
     axis.set_title(
         f"Результат симуляции: "
         f"{dimensions[0]:.1f} × {dimensions[1]:.1f} × {dimensions[2]:.1f} мм",

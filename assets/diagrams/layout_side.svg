@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="760" viewBox="0 0 1100 760">
 <style>
   text { font-family: 'DejaVu Sans', Arial, sans-serif; fill: #17212b; }
   .title { font-size: 28px; font-weight: 700; }
@@ -16,42 +16,53 @@
   <marker id="dim" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,4 L8,0 L8,8 z" fill="#c62828"/></marker>
 </defs>
 <rect width="100%" height="100%" fill="white"/>
-<text x="60" y="54" class="title">Измерительная станция — вид сбоку (Y–Z)</text>
-<line x1="95" y1="610" x2="1110" y2="610" stroke="#263238" stroke-width="14"/>
-<line x1="95" y1="628" x2="1110" y2="628" stroke="#90a4ae" stroke-width="8"/>
-<text x="90" y="665" class="label">Конвейер, v = 1 m/s</text>
-<path d="M300 665 H410" class="signal"/>
+<defs>
+  <marker id="dim-secondary" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,4 L8,0 L8,8 z" fill="#546e7a"/></marker>
+</defs>
+<text x="40" y="45" class="title">Измерительная станция — вид сбоку (Y-Z)</text>
+<text x="40" y="78" class="small">Один фиксированный профиль X-Z; 3D-облако накапливается при движении товара по Y.</text>
 
-<rect x="535" y="82" width="130" height="68" rx="4" class="hardware"/>
-<circle cx="570" cy="150" r="8" fill="#145ea8"/><circle cx="630" cy="150" r="8" fill="#145ea8"/>
-<line x1="600" y1="150" x2="600" y2="610" class="laser"/>
-<text x="600" y="113" text-anchor="middle" class="label">Gocator 2880</text>
-<text x="600" y="137" text-anchor="middle" class="small">две камеры</text>
-<text x="615" y="205" class="small">фиксированная X-Z плоскость профиля</text>
+<rect x="455" y="110" width="190" height="84" rx="4" class="hardware"/>
+<text x="550" y="143" text-anchor="middle" class="label">Gocator 2880</text>
+<text x="550" y="171" text-anchor="middle" class="small">две камеры</text>
+<circle cx="515" cy="211" r="7" fill="#145ea8"/><circle cx="585" cy="211" r="7" fill="#145ea8"/>
+<line x1="550" y1="219" x2="550" y2="370" class="laser"/>
+<text x="590" y="244" class="small">лазерный профиль X-Z</text>
 
-<polygon points="505,610 505,400 695,400 695,610" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
-<text x="600" y="440" text-anchor="middle" class="label">товар</text>
-<text x="600" y="466" text-anchor="middle" class="small">до 300 mm</text>
+<line x1="280" y1="290" x2="280" y2="570" stroke="#607d8b" stroke-width="2" class="dash"/>
+<line x1="720" y1="290" x2="720" y2="570" stroke="#607d8b" stroke-width="2" class="dash"/>
+<line x1="280" y1="320" x2="520" y2="320" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<line x1="580" y1="320" x2="720" y2="320" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<rect x="390" y="252" width="220" height="53" rx="3" fill="white"/>
+<text x="500" y="275" text-anchor="middle" class="label">700 мм</text>
+<text x="500" y="299" text-anchor="middle" class="small">окно накопления профилей</text>
 
-<line x1="700" y1="150" x2="700" y2="610" class="dimension"/>
-<text x="716" y="390" class="label" fill="#c62828">917 mm</text>
-<line x1="505" y1="380" x2="695" y2="380" class="dimension"/>
-<text x="600" y="365" text-anchor="middle" class="small">до 400 mm по ходу</text>
+<rect x="470" y="370" width="160" height="200" fill="#fff3e0" stroke="#ef6c00" stroke-width="2"/>
+<text x="550" y="458" text-anchor="middle" class="label">Товар</text>
+<text x="550" y="484" text-anchor="middle" class="small">h ≤ 300 мм</text>
 
-<line x1="350" y1="580" x2="850" y2="580" class="dimension"/>
-<text x="600" y="566" text-anchor="middle" class="label">700 mm формируются движением по Y</text>
-<line x1="350" y1="250" x2="350" y2="610" stroke="#607d8b" stroke-width="2" class="dash"/>
-<line x1="850" y1="250" x2="850" y2="610" stroke="#607d8b" stroke-width="2" class="dash"/>
+<line x1="665" y1="219" x2="805" y2="219" stroke="#90a4ae" stroke-width="1.5"/>
+<line x1="720" y1="570" x2="805" y2="570" stroke="#90a4ae" stroke-width="1.5"/>
+<line x1="805" y1="219" x2="805" y2="570" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<text x="850" y="372" class="label">≈917 мм</text>
+<text x="850" y="397" class="small">расчётная высота</text>
 
-<line x1="170" y1="250" x2="170" y2="610" stroke="#7b1fa2" stroke-width="4"/>
-<circle cx="150" cy="575" r="13" fill="#7b1fa2"/><circle cx="190" cy="575" r="13" fill="#7b1fa2"/>
-<text x="170" y="232" text-anchor="middle" class="label">SICK WLF4FI</text>
-<line x1="170" y1="285" x2="350" y2="285" class="dimension"/>
-<text x="260" y="270" text-anchor="middle" class="small">250 mm до зоны</text>
+<line x1="140" y1="370" x2="140" y2="570" stroke="#7b1fa2" stroke-width="4"/>
+<circle cx="123" cy="550" r="12" fill="#7b1fa2"/><circle cx="157" cy="550" r="12" fill="#7b1fa2"/>
+<text x="140" y="350" text-anchor="middle" class="label">SICK WLF4FI</text>
+<line x1="140" y1="420" x2="280" y2="420" stroke="#546e7a" stroke-width="2" fill="none" marker-start="url(#dim-secondary)" marker-end="url(#dim-secondary)"/>
+<text x="210" y="405" text-anchor="middle" class="small">250 мм</text>
 
-<circle cx="980" cy="625" r="35" fill="#e8f1fb" stroke="#145ea8" stroke-width="3"/>
-<circle cx="980" cy="625" r="7" fill="#145ea8"/>
-<text x="980" y="690" text-anchor="middle" class="label">SICK DFS60 + мерное колесо</text>
-<text x="60" y="715" class="small">PRELIMINARY CALCULATED LAYOUT: FOV 680 mm на Z=300 mm, запас 40 mm/сторону.</text>
-<text x="60" y="738" class="small">Финальная установка определяется factory calibration model и проверкой лазерной безопасности.</text>
+<line x1="70" y1="570" x2="1030" y2="570" stroke="#263238" stroke-width="14"/>
+<line x1="70" y1="588" x2="1030" y2="588" stroke="#90a4ae" stroke-width="8"/>
+<text x="70" y="632" class="label">Конвейер, v = 1 м/с</text>
+<path d="M300 626 H400" class="signal"/><text x="417" y="632" class="label">Y</text>
+
+<circle cx="930" cy="620" r="28" fill="#e8f1fb" stroke="#145ea8" stroke-width="3"/>
+<circle cx="930" cy="620" r="5" fill="#145ea8"/>
+<text x="930" y="674" text-anchor="middle" class="label">SICK DFS60</text>
+<text x="930" y="696" text-anchor="middle" class="small">мерное колесо</text>
+
+<text x="40" y="700" class="small">700 мм — путь товара во время накопления профилей, а не оптический FOV.</text>
+<text x="40" y="725" class="small">FOV 680 мм относится к направлению X на высоте Z=300 мм.</text>
 </svg>

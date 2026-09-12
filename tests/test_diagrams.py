@@ -31,20 +31,19 @@ def test_diagram_generator_writes_valid_consistent_svg_files(tmp_path) -> None:
         if path.suffix == ".svg"
     )
     assert "Gocator 2880" in combined
-    assert "917 mm" in combined
-    assert "680 mm" in combined
-    assert "40 mm" in combined
-    assert "1006 mm" in combined
-    assert "PRELIMINARY CALCULATED LAYOUT" in combined
-    assert "843 mm" not in combined
-    assert "600 mm на Z=300" not in combined
-    assert "1 m/s" in combined
+    assert "917 мм" in combined
+    assert "680 мм" in combined
+    assert "40 мм" in combined
+    assert "расчётная высота" in combined
+    assert "843 мм" not in combined
+    assert "600 мм на Z=300" not in combined
+    assert "1 м/с" in combined
 
     side = (tmp_path / "layout_side.svg").read_text(encoding="utf-8")
-    assert "фиксированная X-Z плоскость профиля" in side
-    assert "700 mm формируются движением по Y" in side
+    assert "Один фиксированный профиль X-Z" in side
+    assert "700 мм — путь товара" in side
     assert "SICK WLF4FI" in side
-    assert "250 mm до зоны" in side
+    assert "250 мм" in side
     assert "SICK DFS60" in side
 
 

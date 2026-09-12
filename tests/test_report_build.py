@@ -17,11 +17,13 @@ def test_report_builds_as_selectable_russian_pdf(tmp_path: Path) -> None:
 
     assert output.read_bytes().startswith(b"%PDF")
     reader = PdfReader(output)
-    assert len(reader.pages) == 1
-    extracted = reader.pages[0].extract_text()
+    assert len(reader.pages) == 2
+    extracted = "\n".join(page.extract_text() or "" for page in reader.pages)
     assert "z_top≈267 мм" in extracted
     assert not {"■", "�"} & set(extracted)
-    assert reader.metadata.title == "Программно-аппаратный комплекс измерения габаритов товара"
+    assert reader.metadata.title == (
+        "Программно-аппаратный комплекс измерения габаритов товара на конвейере"
+    )
     assert reader.metadata.author == "Болбачан Леонид Анатольевич"
 
 
@@ -33,10 +35,12 @@ def test_full_report_has_expected_title_and_page_range(tmp_path: Path) -> None:
 
     reader = PdfReader(output)
     extracted = "\n".join(page.extract_text() or "" for page in reader.pages)
+    normalized = " ".join(extracted.split())
     assert 12 <= len(reader.pages) <= 18
     assert "Gocator 2880" in extracted
-    assert "SIMULATED" in extracted
-    assert "Граница доказательств" in extracted
+    assert "Результат симуляции" in extracted
+    assert "120,8 × 80,7 × 46,0 мм" in extracted
+    assert "не устанавливают абсолютную точность физической станции" in normalized
     assert "Болбачан Леонид Анатольевич" in extracted
     assert "2026" in extracted
     assert not {"■", "�"} & set(extracted)
