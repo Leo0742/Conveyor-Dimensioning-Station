@@ -98,35 +98,160 @@ points_mm → RANSAC плоскости ленты → фильтрация → 
 
 ## Запуск
 
-Нужны Python 3.12 и [uv](https://docs.astral.sh/uv/).
+Ниже — самый простой способ проверить проект с нуля. Команды нужно копировать в
+терминал **по одной, сверху вниз**. После каждой команды дождитесь её завершения и
+только потом переходите к следующей.
+
+### 1. Проверить, что установлены Git и uv
+
+В терминале выполните:
+
+```bash
+git --version
+```
+
+Затем:
+
+```bash
+uv --version
+```
+
+Если обе команды выводят номер версии, можно переходить к следующему шагу.
+
+Если `uv` не установлен:
+
+- macOS / Linux:
+
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+
+- Windows PowerShell:
+
+  ```powershell
+  powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+  ```
+
+После установки закройте и снова откройте терминал, затем ещё раз выполните
+`uv --version`. Если не установлен Git, его можно скачать с
+[git-scm.com](https://git-scm.com/downloads).
+
+### 2. Скачать проект
 
 ```bash
 git clone https://github.com/Leo0742/Conveyor-Dimensioning-Station.git
+```
+
+После завершения клонирования перейти в папку проекта:
+
+```bash
 cd Conveyor-Dimensioning-Station
+```
+
+Все следующие команды нужно выполнять **из этой папки**.
+
+### 3. Установить Python 3.12 и зависимости проекта
+
+```bash
 uv sync --frozen --python 3.12
+```
+
+`uv` создаст локальное окружение проекта и при необходимости установит подходящий
+Python 3.12. На этом шаге нужно дождаться полного завершения установки.
+
+### 4. Проверить код и тесты
+
+Сначала запустить Ruff:
+
+```bash
 uv run ruff check .
+```
+
+При успешной проверке Ruff должен завершиться без ошибок.
+
+Затем запустить автоматические тесты:
+
+```bash
 uv run pytest -q
+```
+
+Если тесты завершились без `FAILED`, базовая проверка проекта пройдена.
+
+### 5. Запустить основное демо
+
+```bash
 uv run conveyor-dimensioning demo --output-dir assets/demo --seed 42
 ```
 
-Полезные отдельные команды:
+После выполнения откройте папку `assets/demo/`. Основные созданные файлы:
+
+- `measurement.png` — визуализация измерения;
+- `conveyor_demo.gif` — движение товара по конвейеру;
+- `sample_scene.npz` — синтетическое облако точек для повторного измерения;
+- `example_measurement.json` — пример сообщения для WMS.
+
+Если эти файлы появились, демо отработало корректно.
+
+### 6. Повторно измерить сохранённую сцену
+
+Эта команда использует `sample_scene.npz`, созданный на предыдущем шаге:
 
 ```bash
-uv run conveyor-dimensioning measure assets/demo/sample_scene.npz \
-  --item-id synthetic-check --seed 42
+uv run conveyor-dimensioning measure assets/demo/sample_scene.npz --item-id synthetic-check --seed 42
+```
+
+В терминале появится JSON с результатом измерения. Для нормального демо-сценария
+поле `measurement_status` должно быть `"ok"`.
+
+### 7. Запустить дополнительные проверки
+
+Эти команды не обязательны для первого знакомства с проектом. Их можно запускать
+по одной после выполнения шагов 1–5.
+
+Тест упрощённой модели сенсора:
+
+```bash
 uv run conveyor-dimensioning sensor-benchmark --output-dir assets/demo --seed 42
-uv run conveyor-dimensioning monte-carlo --output-dir assets/demo \
-  --count 500 --seed 20261017
+```
+
+Полный Monte Carlo на 500 сценариев (может выполняться несколько минут):
+
+```bash
+uv run conveyor-dimensioning monte-carlo --output-dir assets/demo --count 500 --seed 20261017
+```
+
+Демонстрация измерения по нескольким окнам движущегося товара:
+
+```bash
 uv run conveyor-dimensioning multiframe-demo --output-dir assets/demo --seed 42
 ```
 
+Результаты этих запусков также сохраняются в `assets/demo/`.
+
 <details>
-<summary>Сборка отчёта и сравнение с Open3D</summary>
+<summary>Дополнительно: пересборка отчёта и сравнение OBB с Open3D</summary>
+
+Сначала пересоздать инженерные схемы:
 
 ```bash
 uv run python scripts/generate_diagrams.py
+```
+
+Затем собрать PDF-отчёт:
+
+```bash
 uv run python scripts/build_report.py
+```
+
+Для дополнительного сравнения OBB установить optional-зависимость Open3D:
+
+```bash
 uv sync --frozen --python 3.12 --extra open3d
+```
+
+После этого выполнить сравнение:
+
+```bash
 uv run python scripts/compare_obb.py --output assets/demo/obb_comparison.json
 ```
 
