@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 permissions:
@@ -10,6 +11,7 @@ permissions:
 jobs:
   checks:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -21,3 +23,36 @@ jobs:
       - run: uv sync --frozen --python 3.12
       - run: uv run ruff check .
       - run: uv run pytest -q
+      - name: Smoke-test README commands
+        run: |
+          rm -rf /tmp/conveyor-smoke
+          uv run conveyor-dimensioning demo --output-dir /tmp/conveyor-smoke --seed 42
+          uv run conveyor-dimensioning measure /tmp/conveyor-smoke/sample_scene.npz \
+            --item-id synthetic-check --seed 42 > /tmp/conveyor-smoke/measure.json
+          uv run conveyor-dimensioning sensor-benchmark \
+            --output-dir /tmp/conveyor-smoke --seed 42
+          uv run conveyor-dimensioning monte-carlo \
+            --output-dir /tmp/conveyor-smoke --count 500 --seed 20261017
+          uv run conveyor-dimensioning multiframe-demo \
+            --output-dir /tmp/conveyor-smoke --seed 42
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('/tmp/conveyor-smoke')
+          required = [
+              'measurement.png',
+              'conveyor_demo.gif',
+              'sample_scene.npz',
+              'sensor_benchmark_metrics.json',
+              'monte_carlo_metrics.json',
+              'multiframe_wms.json',
+              'measure.json',
+          ]
+          missing = [name for name in required if not (root / name).exists()]
+          if missing:
+              raise SystemExit(f'missing smoke-test outputs: {missing}')
+          payload = json.loads((root / 'measure.json').read_text())
+          if payload.get('measurement_status') != 'ok':
+              raise SystemExit(f'unexpected measurement status: {payload}')
+          PY
