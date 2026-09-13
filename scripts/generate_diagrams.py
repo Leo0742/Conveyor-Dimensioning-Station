@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, Rectangle
 from matplotlib.transforms import Bbox
 
-from conveyor_dimensioning.hardware import GOCATOR_2880, calculate_linear_fov_layout
+from conveyor_dimensioning.hardware import SELECTED_LAYOUT
 
 STYLE = """
 <style>
@@ -44,7 +44,7 @@ def _svg(body: str, *, width: int = 1200, height: int = 760) -> str:
 
 
 def _side_view() -> str:
-    layout = calculate_linear_fov_layout(GOCATOR_2880, target_top_fov_mm=680.0)
+    layout = SELECTED_LAYOUT
     return _svg(
         f"""
 <defs>
@@ -102,7 +102,7 @@ def _side_view() -> str:
 
 
 def _top_view() -> str:
-    layout = calculate_linear_fov_layout(GOCATOR_2880, target_top_fov_mm=680.0)
+    layout = SELECTED_LAYOUT
     return _svg(
         f"""
 <defs>
@@ -267,7 +267,7 @@ def _save_png(figure, path: Path, *, tight: bool = False) -> None:
 
 
 def _side_png(path: Path) -> None:
-    layout = calculate_linear_fov_layout(GOCATOR_2880, target_top_fov_mm=680.0)
+    layout = SELECTED_LAYOUT
     figure, axis = _png_axes(width=1100, compact=True)
     title = axis.text(40, 715, "Измерительная станция — вид сбоку (Y-Z)", size=21, weight="bold")
     subtitle = axis.text(
@@ -434,7 +434,7 @@ def _side_png(path: Path) -> None:
 
 
 def _top_png(path: Path) -> None:
-    layout = calculate_linear_fov_layout(GOCATOR_2880, target_top_fov_mm=680.0)
+    layout = SELECTED_LAYOUT
     figure, axis = _png_axes(width=1100, compact=True)
     title = axis.text(40, 715, "Измерительная станция — вид сверху (X-Y)", size=21, weight="bold")
     subtitle = axis.text(40, 682, "Товар движется по Y; последовательные поперечные профили формируют 3D-облако.", size=11, color="#455a64")

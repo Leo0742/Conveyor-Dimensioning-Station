@@ -7,6 +7,7 @@ from typing import Literal
 
 import numpy as np
 
+from conveyor_dimensioning.hardware import SELECTED_LAYOUT, SELECTED_STATION
 from conveyor_dimensioning.types import PointCloudFrame
 
 SENSOR_LIKE_EVIDENCE = "SIMPLIFIED LINE-PROFILER SYNTHETIC"
@@ -17,13 +18,13 @@ ShapeName = Literal["box", "l_prism", "cylinder", "composite"]
 class LineProfilerConfig:
     """Selected 2880 sampling geometry; not an optical or firmware emulator."""
 
-    conveyor_speed_mm_s: float = 1000.0
-    profile_rate_hz: float = 1000.0
-    points_per_profile: int = 1280
-    fov_near_mm: float = 390.0
-    fov_far_mm: float = 1260.0
-    measurement_range_mm: float = 800.0
-    belt_position_in_range_mm: float = 566.6666666666666
+    conveyor_speed_mm_s: float = SELECTED_STATION.conveyor_speed_mm_s
+    profile_rate_hz: float = SELECTED_STATION.target_profile_rate_hz
+    points_per_profile: int = SELECTED_STATION.sensor.points_per_profile
+    fov_near_mm: float = SELECTED_STATION.sensor.fov_near_mm
+    fov_far_mm: float = SELECTED_STATION.sensor.fov_far_mm
+    measurement_range_mm: float = SELECTED_STATION.sensor.measurement_range_mm
+    belt_position_in_range_mm: float = SELECTED_LAYOUT.belt_position_in_range_mm
     missing_profile_probability: float = 0.0
 
     def __post_init__(self) -> None:
@@ -63,6 +64,7 @@ class SimulatedObject:
     profile_rate_hz: float = float("nan")
     fov_clipped: bool = False
     missing_profile_count: int = 0
+    physical_support_points_mm: np.ndarray | None = None
 
 
 def rotation_matrix_xyz(rotation_deg: tuple[float, float, float]) -> np.ndarray:
@@ -206,6 +208,81 @@ def _grounding_offset_z_mm(
         ]
     )
     return float(-(support_points @ rotation.T)[:, 2].min())
+
+
+def physical_shape_support_points(
+    shape: ShapeName,
+    dimensions_mm: tuple[float, float, float],
+    *,
+    rotation_deg: tuple[float, float, float] = (0.0, 0.0, 0.0),
+    center_xy_mm: tuple[float, float] = (0.0, 0.0),
+) -> np.ndarray:
+    """Return physical support points whose extrema exactly bound the transformed shape.
+
+    Polygonal shapes use every extruded vertex. The cylinder uses the analytic
+    radial support angles for world X and Y at both axial endpoints. These are
+    geometry ground truth for evaluation and are never passed to the measurer.
+    """
+    dimensions = np.asarray(dimensions_mm, dtype=float)
+    if dimensions.shape != (3,) or np.any(dimensions <= 0):
+        raise ValueError("dimensions_mm must contain three positive values")
+    if shape not in ("box", "l_prism", "cylinder", "composite"):
+        raise ValueError(f"unsupported shape: {shape}")
+    length, width, height = dimensions
+    rotation = rotation_matrix_xyz(rotation_deg)
+    if shape == "cylinder":
+        radius = min(length, width) / 2
+        angles: list[float] = []
+        for axis in (0, 1):
+            angle = float(np.arctan2(rotation[axis, 1], rotation[axis, 0]))
+            angles.extend([angle, angle + np.pi])
+        local = np.array(
+            [
+                [radius * np.cos(angle), radius * np.sin(angle), z]
+                for angle in angles
+                for z in (-height / 2, height / 2)
+            ]
+        )
+    else:
+        polygons = [_polygon_for_shape(shape, dimensions)]
+        if shape == "composite":
+            arm = min(length, width) * 0.32
+            polygons = [
+                _polygon_for_shape("box", np.array([length, arm, height])),
+                _polygon_for_shape("box", np.array([arm, width, height])),
+            ]
+        local = np.vstack(
+            [
+                np.column_stack([polygon, np.full(len(polygon), z)])
+                for polygon in polygons
+                for z in (-height / 2, height / 2)
+            ]
+        )
+    transformed = local @ rotation.T
+    transformed[:, 2] += _grounding_offset_z_mm(shape, dimensions, rotation)
+    transformed += np.array([center_xy_mm[0], center_xy_mm[1], 0.0])
+    return transformed
+
+
+def lateral_center_limits_mm(
+    shape: ShapeName,
+    dimensions_mm: tuple[float, float, float],
+    rotation_deg: tuple[float, float, float],
+    *,
+    conveyor_width_mm: float = SELECTED_STATION.conveyor_width_mm,
+) -> tuple[float, float]:
+    """Return the center-X interval that keeps the physical shape on the belt."""
+    if conveyor_width_mm <= 0:
+        raise ValueError("conveyor_width_mm must be positive")
+    support = physical_shape_support_points(
+        shape, dimensions_mm, rotation_deg=rotation_deg
+    )
+    half_belt = conveyor_width_mm / 2
+    lower = -half_belt - float(support[:, 0].min())
+    upper = half_belt - float(support[:, 0].max())
+    if lower > upper:
+        raise ValueError("transformed physical shape is wider than the conveyor")
+    return lower, upper
 
 
 def _line_profiler_candidates(
@@ -393,6 +470,12 @@ def sample_line_profiler_shape(
         profile_rate_hz=profiler.profile_rate_hz,
         fov_clipped=fov_clipped,
         missing_profile_count=len(missing_rows),
+        physical_support_points_mm=physical_shape_support_points(
+            shape,
+            dimensions_mm,
+            rotation_deg=rotation_deg,
+            center_xy_mm=center_xy_mm,
+        ),
     )
 
 
@@ -406,8 +489,8 @@ def sample_line_profiler_box(
 def make_scene(
     product_points_mm: np.ndarray,
     *,
-    conveyor_width_mm: float = 600.0,
-    zone_length_mm: float = 700.0,
+    conveyor_width_mm: float = SELECTED_STATION.conveyor_width_mm,
+    zone_length_mm: float = SELECTED_STATION.measurement_zone_length_mm,
     plane_point_count: int = 2500,
     plane_noise_std_mm: float = 0.15,
     seed: int = 0,
@@ -431,7 +514,7 @@ def simulate_sequence(
     *,
     frame_count: int = 12,
     fps: float = 30.0,
-    speed_mm_s: float = 1000.0,
+    speed_mm_s: float = SELECTED_STATION.conveyor_speed_mm_s,
 ) -> list[PointCloudFrame]:
     """Translate an unchanged product along +Y using encoder-equivalent positions."""
     if frame_count < 1 or fps <= 0 or speed_mm_s < 0:

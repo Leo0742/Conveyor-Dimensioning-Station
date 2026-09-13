@@ -84,59 +84,59 @@
   {
     "shape": "l_prism",
     "aabb_volume_mm3": 311846.95548075385,
-    "pca_volume_mm3": 272848.2958400169,
-    "custom_volume_mm3": 213482.7234552998,
-    "reference_volume_mm3": 213597.09780612378,
+    "pca_volume_mm3": 272848.29584001703,
+    "custom_volume_mm3": 213482.72345529977,
+    "reference_volume_mm3": 213597.09780612384,
     "aabb_dimensions_mm": [
-      119.51064453125,
+      119.51064453125001,
       70.0,
       37.27665032969525
     ],
     "pca_dimensions_mm": [
-      115.88521187637473,
+      115.88521187637477,
       69.05371302149021,
       34.09621656918407
     ],
     "custom_dimensions_mm": [
-      100.82573978033182,
-      65.98919475753576,
+      100.82573978033184,
+      65.98919475753573,
       32.086214945849235
     ],
     "reference_dimensions_mm": [
-      100.85207509502493,
-      65.98919475753573,
-      32.095022180579754
+      100.85207509502496,
+      65.98919475753574,
+      32.09502218057975
     ],
     "custom_reference_dimension_difference_mm": [
       -0.026335314693113787,
-      2.842170943040401e-14,
-      -0.008807234730518587
+      -1.4210854715202004e-14,
+      -0.008807234730511482
     ],
     "custom_reference_dimension_abs_diff_mm": [
       0.026335314693113787,
-      2.842170943040401e-14,
-      0.008807234730518587
+      1.4210854715202004e-14,
+      0.008807234730511482
     ],
-    "custom_gap_percent": -0.0535467719359195,
+    "custom_gap_percent": -0.05354677193596391,
     "reference_method": "create_from_points_minimal (minimal-approx)",
     "reference_availability": "MINIMAL_JYLANKI unavailable in frozen Open3D 0.19.0 runtime; using create_from_points_minimal (minimal-approx)",
     "open3d_version": "0.19.0"
   },
   {
     "shape": "cylinder",
-    "aabb_volume_mm3": 148871.8170681029,
-    "pca_volume_mm3": 143675.46780183513,
+    "aabb_volume_mm3": 148871.81706810292,
+    "pca_volume_mm3": 143675.4678018354,
     "custom_volume_mm3": 137086.4601086657,
-    "reference_volume_mm3": 137117.14517285957,
+    "reference_volume_mm3": 137117.14517285966,
     "aabb_dimensions_mm": [
-      66.562890625,
+      66.56289062500001,
       66.0,
       33.887254155602605
     ],
     "pca_dimensions_mm": [
-      66.45043238232402,
-      65.77551293093836,
-      32.871578931435785
+      66.45043238232407,
+      65.77551293093839,
+      32.8715789314358
     ],
     "custom_dimensions_mm": [
       65.35662134526758,
@@ -144,62 +144,62 @@
       32.17170435410922
     ],
     "reference_dimensions_mm": [
-      65.36106210707925,
+      65.36106210707928,
       65.2008677815293,
       32.175054096197044
     ],
     "custom_reference_dimension_difference_mm": [
-      -0.004440761811665084,
+      -0.0044407618116935055,
       -0.003374227828885523,
       -0.0033497420878276785
     ],
     "custom_reference_dimension_abs_diff_mm": [
-      0.004440761811665084,
+      0.0044407618116935055,
       0.003374227828885523,
       0.0033497420878276785
     ],
-    "custom_gap_percent": -0.02237872160713028,
+    "custom_gap_percent": -0.022378721607196894,
     "reference_method": "create_from_points_minimal (minimal-approx)",
     "reference_availability": "MINIMAL_JYLANKI unavailable in frozen Open3D 0.19.0 runtime; using create_from_points_minimal (minimal-approx)",
     "open3d_version": "0.19.0"
   },
   {
     "shape": "composite",
-    "aabb_volume_mm3": 233031.0582817844,
-    "pca_volume_mm3": 231099.6699184459,
-    "custom_volume_mm3": 205865.41520946324,
-    "reference_volume_mm3": 205865.4152094633,
+    "aabb_volume_mm3": 233031.05828178444,
+    "pca_volume_mm3": 231099.66991844593,
+    "custom_volume_mm3": 205865.4152094633,
+    "reference_volume_mm3": 205865.41520946333,
     "aabb_dimensions_mm": [
-      96.81875,
+      96.81875000000001,
       69.0,
       34.88231064983549
     ],
     "pca_dimensions_mm": [
-      100.80020727824952,
+      100.80020727824953,
       66.757503823159,
       34.34296685452267
     ],
     "custom_dimensions_mm": [
-      97.00739319415672,
+      97.00739319415675,
       66.2398578798301,
       32.03754035799263
     ],
     "reference_dimensions_mm": [
-      97.00739319415673,
+      97.00739319415675,
       66.23985787983011,
       32.03754035799263
     ],
     "custom_reference_dimension_difference_mm": [
-      -1.4210854715202004e-14,
+      0.0,
       -1.4210854715202004e-14,
       0.0
     ],
     "custom_reference_dimension_abs_diff_mm": [
-      1.4210854715202004e-14,
+      0.0,
       1.4210854715202004e-14,
       0.0
     ],
-    "custom_gap_percent": -3.3306690738754696e-14,
+    "custom_gap_percent": -1.1102230246251565e-14,
     "reference_method": "create_from_points_minimal (minimal-approx)",
     "reference_availability": "MINIMAL_JYLANKI unavailable in frozen Open3D 0.19.0 runtime; using create_from_points_minimal (minimal-approx)",
     "open3d_version": "0.19.0"

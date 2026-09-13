@@ -5,6 +5,7 @@ from conveyor_dimensioning.preprocessing import (
     estimate_cluster_radius,
     fit_conveyor_plane_ransac,
     largest_cluster,
+    merge_nearby_components,
     remove_plane,
     statistical_filter,
 )
@@ -124,3 +125,27 @@ def test_connected_components_keeps_tiny_noise_separate() -> None:
     components = connected_components(np.vstack([product, noise]), radius_mm=2.0)
 
     assert sorted(map(len, components), reverse=True) == [80, 5]
+
+
+def test_small_nearby_fragment_is_reconnected() -> None:
+    rng = np.random.default_rng(51)
+    main = rng.normal([0.0, 0.0, 10.0], 0.5, (100, 3))
+    fragment = rng.normal([5.0, 0.0, 10.0], 0.3, (10, 3))
+
+    merged = merge_nearby_components(
+        [main, fragment], maximum_gap_mm=8.0, maximum_size_ratio=0.2
+    )
+
+    assert [len(component) for component in merged] == [110]
+
+
+def test_two_close_comparable_products_are_not_merged() -> None:
+    rng = np.random.default_rng(52)
+    left = rng.normal([-3.0, 0.0, 10.0], 0.4, (100, 3))
+    right = rng.normal([3.0, 0.0, 10.0], 0.4, (90, 3))
+
+    merged = merge_nearby_components(
+        [left, right], maximum_gap_mm=8.0, maximum_size_ratio=0.2
+    )
+
+    assert sorted(map(len, merged), reverse=True) == [100, 90]

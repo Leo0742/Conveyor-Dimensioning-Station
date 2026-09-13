@@ -5,7 +5,9 @@ import conveyor_dimensioning.simulation as simulation
 from conveyor_dimensioning.simulation import (
     SENSOR_LIKE_EVIDENCE,
     LineProfilerConfig,
+    lateral_center_limits_mm,
     make_scene,
+    physical_shape_support_points,
     sample_box_surface,
     sample_line_profiler_box,
     sample_line_profiler_shape,
@@ -265,3 +267,23 @@ def test_points_outside_height_dependent_fov_are_clipped(center_x: float) -> Non
 
     assert observed.fov_clipped is True
     assert np.all(np.abs(observed.points_mm[:, 0]) <= half_width + 1e-9)
+
+
+def test_400_by_300_box_at_45_degrees_uses_its_transformed_physical_footprint() -> None:
+    dimensions = (400.0, 300.0, 100.0)
+    rotation = (0.0, 0.0, 45.0)
+    lower, upper = lateral_center_limits_mm("box", dimensions, rotation)
+
+    # Exact half-width: 200*cos(45°) + 150*sin(45°).
+    expected_limit = 300.0 - 350.0 / np.sqrt(2.0)
+    assert lower == pytest.approx(-expected_limit)
+    assert upper == pytest.approx(expected_limit)
+
+    left = physical_shape_support_points(
+        "box", dimensions, rotation_deg=rotation, center_xy_mm=(lower, 0.0)
+    )
+    right = physical_shape_support_points(
+        "box", dimensions, rotation_deg=rotation, center_xy_mm=(upper, 0.0)
+    )
+    assert left[:, 0].min() == pytest.approx(-300.0)
+    assert right[:, 0].max() == pytest.approx(300.0)

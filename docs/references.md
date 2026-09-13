@@ -1,6 +1,6 @@
 # Источники
 
-Дата доступа для веб-источников: 10 сентября 2026 года.
+Дата доступа для веб-источников: 13 сентября 2026 года.
 
 ## Исходное задание и отраслевой контекст
 
@@ -22,7 +22,7 @@
 13. RealSense. [Multi-Camera Configurations — D400](https://dev.realsenseai.com/docs/multiple-depth-cameras-configuration/). Перекрывающиеся камеры, синхронизация и проекторы.
 14. SICK. [DFS60I-BHPC65536 datasheet](https://www.sick.com/media/pdf/2/62/762/dataSheet_DFS60I-BHPC65536_1091640_en.pdf). 65 536 импульсов/оборот, TTL/HTL, 820 кГц.
 15. SICK. [W4F product information](https://www.sick.com/media/docs/4/24/724/product_information_w4f_en_im0093724.pdf). Семейство промышленных фотоэлектрических датчиков.
-16. SICK. [WLF4FI-973121A0ZZZ datasheet](https://www.sick.com/media/pdf/5/45/645/dataSheet_WLF4FI-973121A0ZZZ_1124155_en.pdf). Ретрорефлекторный датчик W4F для сложных объектов.
+16. SICK. [WLF4FI-973121A0ZZZ datasheet](https://www.sick.com/media/pdf/5/45/645/dataSheet_WLF4FI-973121A0ZZZ_1124155_en.pdf). Ретрорефлекторный датчик W4F; точечный ИК-луч, световое пятно Ø40 мм на 1 м и рекомендованный диапазон 0,4–7 м.
 
 ## Вычислитель и ПО
 

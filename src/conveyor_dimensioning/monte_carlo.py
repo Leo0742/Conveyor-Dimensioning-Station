@@ -15,14 +15,17 @@ from conveyor_dimensioning.benchmark import (
     _evaluate_case,
     summarize_rows,
 )
+from conveyor_dimensioning.hardware import SELECTED_STATION
 from conveyor_dimensioning.simulation import (
     LineProfilerConfig,
+    lateral_center_limits_mm,
     make_scene,
+    physical_shape_support_points,
     sample_line_profiler_shape,
 )
 
 DEVELOPMENT_SEED = 1337
-FINAL_EVALUATION_SEED = 20261017
+FINAL_EVALUATION_SEED = 20261018
 FROZEN_CONFIGURATION_LABEL = "FROZEN BEFORE FINAL SEED"
 SUBSETS = ("yaw_only", "tilted_irregular", "small_object", "noisy_incomplete")
 
@@ -71,14 +74,21 @@ def generate_monte_carlo_cases(count: int, *, seed: int) -> list[BenchmarkCase]:
             if expected_reject
             else (rng.uniform(0.12, 0.35) if noisy else rng.uniform(0.0, 0.04))
         )
-        footprint = max(dimensions[:2]) / 2
-        lateral_limit = max(0.0, 300.0 - min(footprint, 290.0))
-        center_x = float(rng.uniform(-lateral_limit, lateral_limit))
+        center_min_x, center_max_x = lateral_center_limits_mm(
+            shape, dimensions, rotation
+        )
+        center_x = float(rng.uniform(center_min_x, center_max_x))
+        physical_support = physical_shape_support_points(
+            shape,
+            dimensions,
+            rotation_deg=rotation,
+            center_xy_mm=(center_x, 0.0),
+        )
         product = sample_line_profiler_shape(
             shape,
             dimensions,
             config=LineProfilerConfig(
-                profile_rate_hz=1000.0,
+                profile_rate_hz=SELECTED_STATION.target_profile_rate_hz,
                 missing_profile_probability=missing_profile_probability,
             ),
             center_xy_mm=(center_x, 0.0),
@@ -102,6 +112,7 @@ def generate_monte_carlo_cases(count: int, *, seed: int) -> list[BenchmarkCase]:
                 reference_dimensions_mm=product.reference_dimensions_mm,
                 subset=subset,
                 expected_reject=expected_reject,
+                physical_support_points_mm=physical_support,
             )
         )
     return cases

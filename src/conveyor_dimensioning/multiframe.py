@@ -9,6 +9,7 @@ from pathlib import Path
 
 import numpy as np
 
+from conveyor_dimensioning.hardware import SELECTED_STATION
 from conveyor_dimensioning.measurement import aggregate_results, measure_scene
 from conveyor_dimensioning.simulation import make_scene, sample_line_profiler_box, simulate_sequence
 from conveyor_dimensioning.types import DimensionResult
@@ -89,6 +90,11 @@ def run_multiframe_demo(output_dir: str | Path, *, seed: int = 42) -> MultiFrame
     if animation_points is None:
         raise RuntimeError("no central measurement window was generated")
     moving = animation_points + np.array([0.0, positions[0], 0.0])
-    frames = simulate_sequence(moving, frame_count=9, fps=10.0, speed_mm_s=1000.0)
+    frames = simulate_sequence(
+        moving,
+        frame_count=9,
+        fps=10.0,
+        speed_mm_s=SELECTED_STATION.conveyor_speed_mm_s,
+    )
     save_motion_gif(frames, destination / "multiframe_motion.gif")
     return MultiFrameEvidence(tuple(records), aggregate, message)

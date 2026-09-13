@@ -3,6 +3,8 @@ import pytest
 from conveyor_dimensioning.hardware import (
     GOCATOR_2490,
     GOCATOR_2880,
+    SELECTED_LAYOUT,
+    SELECTED_STATION,
     calculate_linear_fov_layout,
     fov_width_at_height_mm,
     profile_rate_scenarios,
@@ -64,3 +66,14 @@ def test_profile_rate_operating_points_are_requirements_not_sensor_capability() 
 def test_profile_spacing_rejects_non_positive_inputs() -> None:
     with pytest.raises(ValueError, match="positive"):
         profile_spacing_mm(1000.0, 0.0)
+
+
+def test_selected_station_is_the_single_source_of_layout_geometry() -> None:
+    assert SELECTED_STATION.sensor is GOCATOR_2880
+    assert SELECTED_STATION.conveyor_width_mm == 600.0
+    assert SELECTED_STATION.maximum_object_height_mm == 300.0
+    assert SELECTED_STATION.measurement_zone_length_mm == 700.0
+    assert SELECTED_STATION.target_top_fov_mm == 680.0
+    assert SELECTED_STATION.conveyor_speed_mm_s == 1000.0
+    assert SELECTED_STATION.target_profile_rate_hz == 1000.0
+    assert SELECTED_LAYOUT.belt_position_in_range_mm == pytest.approx(566.6666666667)

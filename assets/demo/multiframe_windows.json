@@ -30,7 +30,7 @@
     "encoder_mm": 200.0,
     "zone_position_mm": -200.0,
     "result": {
-      "length_mm": 120.58760285539033,
+      "length_mm": 120.58760285539034,
       "width_mm": 80.89350206036517,
       "height_mm": 45.832931237372,
       "confidence": 0.966474252551756,
@@ -43,8 +43,8 @@
     "encoder_mm": 300.0,
     "zone_position_mm": -100.0,
     "result": {
-      "length_mm": 120.84626406210526,
-      "width_mm": 80.7226618878454,
+      "length_mm": 120.84626406210532,
+      "width_mm": 80.72266188784542,
       "height_mm": 45.785836119059496,
       "confidence": 0.9664280765894129,
       "status": "ok",
@@ -69,7 +69,7 @@
     "encoder_mm": 500.0,
     "zone_position_mm": 100.0,
     "result": {
-      "length_mm": 120.86081037403916,
+      "length_mm": 120.86081037403919,
       "width_mm": 80.89384773358265,
       "height_mm": 45.86899186054826,
       "confidence": 0.9667652837310342,
@@ -82,9 +82,9 @@
     "encoder_mm": 600.0,
     "zone_position_mm": 200.0,
     "result": {
-      "length_mm": 120.5346895845526,
+      "length_mm": 120.53468958455262,
       "width_mm": 80.51703606334446,
-      "height_mm": 45.81376208121814,
+      "height_mm": 45.81376208121812,
       "confidence": 0.9664280765894129,
       "status": "ok",
       "point_count": 9023

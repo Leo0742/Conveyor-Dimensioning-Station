@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Literal
 
 import numpy as np
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 MeasurementStatus = Literal[
     "ok",
@@ -38,8 +38,52 @@ class PointCloudFrame(BaseModel):
         return points
 
 
+class AcquisitionBatch(BaseModel):
+    """Acquisition-boundary batch with encoder and profile-quality metadata."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True, frozen=True)
+
+    points_mm: np.ndarray
+    encoder_position_mm: float
+    encoder_spacing_mm: float = Field(gt=0)
+    profile_count: int = Field(ge=0)
+    expected_profile_count: int = Field(ge=1)
+    missing_profile_count: int = Field(ge=0)
+    invalid_profile_count: int = Field(ge=0)
+    sensor_status_flags: tuple[str, ...] = ()
+    trigger_drop_detected: bool = False
+    saturation_fraction: float | None = Field(default=None, ge=0, le=1)
+
+    @field_validator("points_mm")
+    @classmethod
+    def validate_points(cls, value: np.ndarray) -> np.ndarray:
+        return PointCloudFrame.validate_points(value)
+
+    @model_validator(mode="after")
+    def validate_profile_counts(self) -> AcquisitionBatch:
+        if self.profile_count + self.missing_profile_count != self.expected_profile_count:
+            raise ValueError(
+                "profile_count plus missing_profile_count must equal expected_profile_count"
+            )
+        if self.invalid_profile_count > self.profile_count:
+            raise ValueError("invalid_profile_count cannot exceed profile_count")
+        return self
+
+    @property
+    def valid_profile_count(self) -> int:
+        return self.profile_count - self.invalid_profile_count
+
+    @property
+    def valid_profile_fraction(self) -> float:
+        return self.valid_profile_count / self.expected_profile_count
+
+
 class DimensionResult(BaseModel):
-    """Normalized dimensions and an uncalibrated heuristic quality score."""
+    """Sorted OBB edges L>=W>=H and an uncalibrated heuristic quality score.
+
+    These names are size ordering, not conveyor axes. The installation's vertical
+    envelope is the separate physical Z limit in the selected station geometry.
+    """
 
     model_config = ConfigDict(frozen=True)
 

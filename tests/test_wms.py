@@ -83,3 +83,29 @@ def test_wms_message_nulls_dimensions_for_non_ok_status(status: str) -> None:
     assert payload["length_mm"] is None
     assert payload["width_mm"] is None
     assert payload["height_mm"] is None
+
+
+def test_wms_rejects_naive_datetime_in_factory_and_direct_contract() -> None:
+    result = DimensionResult(
+        length_mm=40,
+        width_mm=30,
+        height_mm=20,
+        confidence=0.8,
+        status="ok",
+        point_count=100,
+    )
+    naive = datetime(2026, 9, 9, 12, 0)
+
+    with pytest.raises(ValueError, match="timezone-aware"):
+        WMSMessage.from_result("box-1", result, timestamp=naive)
+    with pytest.raises(ValueError, match="timezone-aware"):
+        WMSMessage(
+            measurement_id="id",
+            item_id="box-1",
+            timestamp=naive,
+            length_mm=40,
+            width_mm=30,
+            height_mm=20,
+            confidence=0.8,
+            measurement_status="ok",
+        )

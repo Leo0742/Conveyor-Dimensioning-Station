@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 
 from conveyor_dimensioning.measurement import measure_scene
+from conveyor_dimensioning.monte_carlo import FINAL_EVALUATION_SEED
 from conveyor_dimensioning.wms import WMSMessage
 
 
@@ -87,7 +88,7 @@ def build_parser() -> argparse.ArgumentParser:
     monte_carlo = subparsers.add_parser("monte-carlo", help="Monte Carlo synthetic benchmark")
     monte_carlo.add_argument("--output-dir", default="assets/demo")
     monte_carlo.add_argument("--count", type=int, default=500)
-    monte_carlo.add_argument("--seed", type=int, default=20261017)
+    monte_carlo.add_argument("--seed", type=int, default=FINAL_EVALUATION_SEED)
     monte_carlo.set_defaults(handler=_monte_carlo)
 
     multiframe = subparsers.add_parser("multiframe-demo", help="moving-object aggregate demo")

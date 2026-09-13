@@ -32,6 +32,7 @@ class BenchmarkCase:
     reference_dimensions_mm: tuple[float, float, float]
     subset: str
     expected_reject: bool = False
+    physical_support_points_mm: np.ndarray | None = None
 
 
 @dataclass(frozen=True)

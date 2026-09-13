@@ -10,6 +10,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from conveyor_dimensioning.geometry import BoundingBox3D
+from conveyor_dimensioning.hardware import SELECTED_STATION
 from conveyor_dimensioning.types import PointCloudFrame
 
 BOX_EDGES = (
@@ -93,8 +94,8 @@ def save_motion_gif(
     frames: list[PointCloudFrame],
     output_path: str | Path,
     *,
-    conveyor_width_mm: float = 600.0,
-    zone_length_mm: float = 700.0,
+    conveyor_width_mm: float = SELECTED_STATION.conveyor_width_mm,
+    zone_length_mm: float = SELECTED_STATION.measurement_zone_length_mm,
 ) -> None:
     """Render a compact top-view animation from simulated frame coordinates."""
     images: list[Image.Image] = []

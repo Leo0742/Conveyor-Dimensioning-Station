@@ -13,7 +13,7 @@ from conveyor_dimensioning.geometry import (
     minimum_volume_box,
     normalize_dimensions,
 )
-from conveyor_dimensioning.hardware import GOCATOR_2880, fov_width_at_height_mm
+from conveyor_dimensioning.hardware import SELECTED_STATION, fov_width_at_height_mm
 from conveyor_dimensioning.preprocessing import (
     connected_components,
     estimate_cluster_radius,
@@ -90,7 +90,7 @@ def reaches_optical_fov_boundary(
     widths = np.array(
         [fov_width_at_height_mm(max(0.0, float(height))) for height in points[:, 2]]
     )
-    pitch = widths / GOCATOR_2880.points_per_profile
+    pitch = widths / SELECTED_STATION.sensor.points_per_profile
     margin = widths / 2 - np.abs(points[:, 0])
     return int(np.count_nonzero(margin <= guard_samples * pitch)) >= minimum_points
 
@@ -142,7 +142,9 @@ def measure_scene(
         component for component in components if len(component) >= settings.cluster_min_points
     ]
     candidates = merge_nearby_components(
-        candidates, maximum_gap_mm=settings.fragment_merge_gap_mm
+        candidates,
+        maximum_gap_mm=settings.fragment_merge_gap_mm,
+        maximum_size_ratio=settings.fragment_merge_max_size_ratio,
     )
     if not candidates:
         return DimensionResult.from_extents(
@@ -218,8 +220,16 @@ def measure_scene(
     )
 
 
-def aggregate_results(results: Sequence[DimensionResult]) -> DimensionResult:
-    """Median-aggregate valid frames and retain their combined evidence count."""
+def aggregate_results(
+    results: Sequence[DimensionResult], config: MeasurementConfig | None = None
+) -> DimensionResult:
+    """Robustly aggregate OK windows and reject weak or inconsistent evidence.
+
+    Only ``status=ok`` windows enter the median/MAD. Acceptance requires the
+    configured absolute count, optional fraction of all windows, and per-axis
+    MAD no larger than max(floor, fraction*median).
+    """
+    settings = config or MeasurementConfig()
     valid = [result for result in results if result.status == "ok"]
     if not valid:
         return DimensionResult.from_extents(
@@ -228,11 +238,24 @@ def aggregate_results(results: Sequence[DimensionResult]) -> DimensionResult:
     dimensions = np.array(
         [[result.length_mm, result.width_mm, result.height_mm] for result in valid]
     )
+    median = np.median(dimensions, axis=0)
+    mad = np.median(np.abs(dimensions - median), axis=0)
+    mad_limit = np.maximum(
+        settings.aggregate_mad_floor_mm,
+        settings.aggregate_mad_fraction * median,
+    )
+    enough_count = len(valid) >= settings.min_valid_windows
+    enough_fraction = (
+        settings.minimum_valid_window_fraction is None
+        or len(valid) / max(len(results), 1) >= settings.minimum_valid_window_fraction
+    )
+    consistent = bool(np.all(mad <= mad_limit))
+    status = "ok" if enough_count and enough_fraction and consistent else "low_confidence"
     return DimensionResult(
-        length_mm=float(np.median(dimensions[:, 0])),
-        width_mm=float(np.median(dimensions[:, 1])),
-        height_mm=float(np.median(dimensions[:, 2])),
+        length_mm=float(median[0]),
+        width_mm=float(median[1]),
+        height_mm=float(median[2]),
         confidence=float(np.median([result.confidence for result in valid])),
-        status="ok",
+        status=status,
         point_count=sum(result.point_count for result in valid),
     )

@@ -6,7 +6,7 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pydantic import BaseModel, ConfigDict, Field, field_serializer
+from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_validator
 
 from conveyor_dimensioning.types import DimensionResult, MeasurementStatus
 
@@ -27,6 +27,13 @@ class WMSMessage(BaseModel):
     )
     measurement_status: MeasurementStatus
 
+    @field_validator("timestamp")
+    @classmethod
+    def require_aware_timestamp(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("timestamp must be timezone-aware")
+        return value
+
     @field_serializer("timestamp")
     def serialize_timestamp(self, value: datetime) -> str:
         return value.astimezone(UTC).isoformat().replace("+00:00", "Z")
@@ -40,6 +47,8 @@ class WMSMessage(BaseModel):
         timestamp: datetime | None = None,
     ) -> WMSMessage:
         captured_at = timestamp or datetime.now(UTC)
+        if captured_at.tzinfo is None or captured_at.utcoffset() is None:
+            raise ValueError("timestamp must be timezone-aware")
         captured_at = captured_at.astimezone(UTC)
         stable_key = f"{item_id}|{captured_at.isoformat()}"
         measurement_id = str(uuid.uuid5(uuid.NAMESPACE_URL, stable_key))

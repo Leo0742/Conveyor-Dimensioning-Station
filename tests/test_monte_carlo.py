@@ -23,7 +23,20 @@ def test_monte_carlo_cases_are_deterministic_and_cover_required_subsets() -> Non
         np.array_equal(left.points_mm, right.points_mm)
         for left, right in zip(first, second, strict=True)
     )
+    assert all(
+        np.array_equal(left.physical_support_points_mm, right.physical_support_points_mm)
+        for left, right in zip(first, second, strict=True)
+    )
     assert sum(max(case.reference_dimensions_mm) <= 40 for case in first) >= 6
+
+
+def test_every_generated_physical_shape_is_inside_600mm_belt() -> None:
+    cases = generate_monte_carlo_cases(160, seed=903)
+
+    for case in cases:
+        assert case.physical_support_points_mm is not None
+        assert case.physical_support_points_mm[:, 0].min() >= -300.0 - 1e-9
+        assert case.physical_support_points_mm[:, 0].max() <= 300.0 + 1e-9
 
 
 def test_monte_carlo_writes_complete_metrics(tmp_path) -> None:

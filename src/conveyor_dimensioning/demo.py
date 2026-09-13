@@ -9,6 +9,7 @@ import numpy as np
 
 from conveyor_dimensioning.config import MeasurementConfig
 from conveyor_dimensioning.geometry import dominant_top_plane_box
+from conveyor_dimensioning.hardware import SELECTED_STATION
 from conveyor_dimensioning.measurement import estimate_support_contact_completion, measure_scene
 from conveyor_dimensioning.preprocessing import (
     fit_conveyor_plane_ransac,
@@ -80,7 +81,7 @@ def run_demo(output_dir: str | Path, *, seed: int = 42) -> DimensionResult:
         moving_product,
         frame_count=12,
         fps=20.0,
-        speed_mm_s=1000.0,
+        speed_mm_s=SELECTED_STATION.conveyor_speed_mm_s,
     )
     save_motion_gif(frames, destination / "conveyor_demo.gif")
 

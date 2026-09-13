@@ -25,7 +25,11 @@ def fit_conveyor_plane_ransac(
     iterations: int = 300,
     seed: int = 0,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Fit the dominant plane and return normalized coefficients plus inlier mask."""
+    """Fit the belt plane near calibrated Z≈0 and return coefficients plus inliers.
+
+    The narrow Z band is an explicit station-coordinate assumption, so this
+    routine is not a generic dominant-plane estimator for uncalibrated clouds.
+    """
     points = np.asarray(points_mm, dtype=float)
     if points.ndim != 2 or points.shape[1] != 3 or len(points) < 3:
         raise ValueError("points_mm must have shape (n, 3), n >= 3")
@@ -168,11 +172,17 @@ def connected_components(points_mm: np.ndarray, *, radius_mm: float) -> list[np.
 
 
 def merge_nearby_components(
-    components: list[np.ndarray], *, maximum_gap_mm: float
+    components: list[np.ndarray], *, maximum_gap_mm: float, maximum_size_ratio: float = 0.2
 ) -> list[np.ndarray]:
-    """Merge components whose axis-aligned bounding boxes are physically close."""
+    """Merge a nearby small fragment into a larger component conservatively.
+
+    Two similarly sized close components remain separate and can therefore
+    trigger ``object_overlap`` instead of being silently fused as one product.
+    """
     if maximum_gap_mm < 0:
         raise ValueError("maximum_gap_mm must be non-negative")
+    if not 0 < maximum_size_ratio < 1:
+        raise ValueError("maximum_size_ratio must be between zero and one")
     merged = [np.asarray(component, dtype=float) for component in components]
     changed = True
     while changed:
@@ -184,7 +194,11 @@ def merge_nearby_components(
                 right = merged[right_index]
                 right_min, right_max = right.min(axis=0), right.max(axis=0)
                 gap = np.maximum(0.0, np.maximum(left_min - right_max, right_min - left_max))
-                if np.linalg.norm(gap) <= maximum_gap_mm:
+                size_ratio = min(len(left), len(right)) / max(len(left), len(right))
+                if (
+                    np.linalg.norm(gap) <= maximum_gap_mm
+                    and size_ratio <= maximum_size_ratio
+                ):
                     merged[left_index] = np.vstack([left, right])
                     del merged[right_index]
                     changed = True

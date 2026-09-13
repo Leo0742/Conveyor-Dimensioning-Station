@@ -3,6 +3,8 @@ import pytest
 from pydantic import ValidationError
 
 from conveyor_dimensioning.config import MeasurementConfig
+from conveyor_dimensioning.hardware import SELECTED_LAYOUT, SELECTED_STATION
+from conveyor_dimensioning.simulation import LineProfilerConfig
 from conveyor_dimensioning.types import DimensionResult, PointCloudFrame
 
 
@@ -27,3 +29,15 @@ def test_dimension_result_orders_length_width_height() -> None:
     assert result.length_mm == 40.0
     assert result.width_mm == 20.0
     assert result.height_mm == 10.0
+
+
+def test_runtime_defaults_do_not_drift_from_selected_station_geometry() -> None:
+    measurement = MeasurementConfig()
+    profiler = LineProfilerConfig()
+
+    assert measurement.conveyor_width_mm == SELECTED_STATION.conveyor_width_mm
+    assert measurement.conveyor_speed_mm_s == SELECTED_STATION.conveyor_speed_mm_s
+    assert profiler.conveyor_speed_mm_s == SELECTED_STATION.conveyor_speed_mm_s
+    assert profiler.profile_rate_hz == SELECTED_STATION.target_profile_rate_hz
+    assert profiler.points_per_profile == SELECTED_STATION.sensor.points_per_profile
+    assert profiler.belt_position_in_range_mm == SELECTED_LAYOUT.belt_position_in_range_mm

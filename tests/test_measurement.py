@@ -22,6 +22,13 @@ def test_dimension_tolerance_uses_larger_of_five_percent_and_five_mm() -> None:
     assert np.array_equal(dimension_tolerance_mm([200.0, 100.0, 10.0]), [10.0, 5.0, 5.0])
 
 
+def test_invalid_cloud_returns_calibration_error() -> None:
+    result = measure_scene(np.ones((2, 3)))
+
+    assert result.status == "calibration_error"
+    assert (result.length_mm, result.width_mm, result.height_mm) == (0.0, 0.0, 0.0)
+
+
 def test_tolerance_evaluation_reports_each_axis() -> None:
     result = DimensionResult.from_extents(
         np.array([208.0, 96.0, 14.0]), confidence=0.9, status="ok", point_count=200
@@ -138,11 +145,55 @@ def test_aggregate_results_uses_median_and_ignores_invalid_frames() -> None:
         ),
     ]
 
-    combined = aggregate_results(results)
+    combined = aggregate_results(
+        results,
+        MeasurementConfig(min_valid_windows=2, minimum_valid_window_fraction=0.5),
+    )
 
     assert (combined.length_mm, combined.width_mm, combined.height_mm) == (100.0, 50.0, 20.0)
     assert combined.status == "ok"
     assert combined.point_count == 190
+
+
+def test_aggregate_does_not_accept_one_valid_window_among_invalid_windows() -> None:
+    results = [
+        DimensionResult(
+            length_mm=100,
+            width_mm=50,
+            height_mm=20,
+            confidence=0.9,
+            status="ok",
+            point_count=100,
+        ),
+        DimensionResult.from_extents(
+            np.zeros(3), confidence=0.0, status="insufficient_depth_data", point_count=0
+        ),
+        DimensionResult.from_extents(
+            np.zeros(3), confidence=0.0, status="low_confidence", point_count=20
+        ),
+    ]
+
+    combined = aggregate_results(results)
+
+    assert combined.status == "low_confidence"
+
+
+def test_aggregate_rejects_several_strongly_inconsistent_valid_windows() -> None:
+    results = [
+        DimensionResult(
+            length_mm=length,
+            width_mm=50,
+            height_mm=20,
+            confidence=0.9,
+            status="ok",
+            point_count=100,
+        )
+        for length in (100.0, 130.0, 170.0, 200.0)
+    ]
+
+    combined = aggregate_results(results)
+
+    assert combined.status == "low_confidence"
 
 
 def test_two_meaningful_products_return_object_overlap() -> None:
@@ -162,6 +213,22 @@ def test_two_meaningful_products_return_object_overlap() -> None:
     assert (result.length_mm, result.width_mm, result.height_mm) == (0.0, 0.0, 0.0)
 
 
+def test_two_close_comparable_products_are_not_fused_by_fragment_repair() -> None:
+    left = sample_line_profiler_box(
+        (30.0, 30.0, 20.0), center_xy_mm=(-17.5, 0.0), edge_shadow=0.0, seed=150
+    )
+    right = sample_line_profiler_box(
+        (30.0, 30.0, 20.0), center_xy_mm=(17.5, 0.0), edge_shadow=0.0, seed=151
+    )
+    scene = make_scene(
+        np.vstack([left.points_mm, right.points_mm]), plane_point_count=1400, seed=152
+    )
+
+    result = measure_scene(scene, MeasurementConfig(cluster_radius_mm=3.0), seed=153)
+
+    assert result.status == "object_overlap"
+
+
 def test_tiny_noise_cluster_does_not_trigger_overlap() -> None:
     product = sample_line_profiler_box(
         (70.0, 45.0, 25.0), edge_shadow=0.0, seed=54
@@ -179,7 +246,11 @@ def test_small_dropout_gap_is_reconnected_as_one_object() -> None:
     product = sample_line_profiler_box(
         (80.0, 50.0, 30.0), edge_shadow=0.0, seed=58
     )
-    fragments = product.points_mm[np.abs(product.points_mm[:, 0]) > 3.0]
+    # A narrow missing strip isolates a small edge fragment. Comparable nearby
+    # components are deliberately not merged because they may be two products.
+    fragments = product.points_mm[
+        (product.points_mm[:, 0] < 30.0) | (product.points_mm[:, 0] > 34.0)
+    ]
     scene = make_scene(fragments, plane_point_count=1400, seed=59)
 
     result = measure_scene(scene, seed=60)
