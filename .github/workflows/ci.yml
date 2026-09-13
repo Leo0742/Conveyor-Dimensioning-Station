@@ -70,8 +70,8 @@ jobs:
           enable-cache: true
       - name: Install optional Open3D dependencies
         run: uv sync --frozen --python 3.12 --extra open3d
-      - name: Run Open3D reference tests
-        run: uv run pytest -q tests/test_obb_reference.py
+      - name: Run full test suite with Open3D
+        run: uv run pytest -q
       - name: Run Open3D comparison script
         run: |
           uv run python scripts/compare_obb.py --output /tmp/obb_comparison.json
