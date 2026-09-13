@@ -25,21 +25,21 @@ jobs:
       - run: uv run pytest -q
       - name: Smoke-test README commands
         run: |
-          rm -rf /tmp/conveyor-smoke
-          uv run conveyor-dimensioning demo --output-dir /tmp/conveyor-smoke --seed 42
-          uv run conveyor-dimensioning measure /tmp/conveyor-smoke/sample_scene.npz \
-            --item-id synthetic-check --seed 42 > /tmp/conveyor-smoke/measure.json
+          rm -rf outputs/demo
+          uv run conveyor-dimensioning demo --output-dir outputs/demo --seed 42
+          uv run conveyor-dimensioning measure outputs/demo/sample_scene.npz \
+            --item-id synthetic-check --seed 42 > outputs/demo/measure.json
           uv run conveyor-dimensioning sensor-benchmark \
-            --output-dir /tmp/conveyor-smoke --seed 42
+            --output-dir outputs/demo --seed 42
           uv run conveyor-dimensioning monte-carlo \
-            --output-dir /tmp/conveyor-smoke --count 500 --seed 20261017
+            --output-dir outputs/demo --count 500 --seed 20261017
           uv run conveyor-dimensioning multiframe-demo \
-            --output-dir /tmp/conveyor-smoke --seed 42
+            --output-dir outputs/demo --seed 42
           python - <<'PY'
           import json
           from pathlib import Path
 
-          root = Path('/tmp/conveyor-smoke')
+          root = Path('outputs/demo')
           required = [
               'measurement.png',
               'conveyor_demo.gif',
@@ -74,12 +74,13 @@ jobs:
         run: uv run pytest -q
       - name: Run Open3D comparison script
         run: |
-          uv run python scripts/compare_obb.py --output /tmp/obb_comparison.json
+          rm -rf outputs/open3d
+          uv run python scripts/compare_obb.py --output outputs/open3d/obb_comparison.json
           python - <<'PY'
           import json
           from pathlib import Path
 
-          path = Path('/tmp/obb_comparison.json')
+          path = Path('outputs/open3d/obb_comparison.json')
           rows = json.loads(path.read_text())
           if len(rows) != 6:
               raise SystemExit(f'expected 6 OBB comparison rows, got {len(rows)}')
