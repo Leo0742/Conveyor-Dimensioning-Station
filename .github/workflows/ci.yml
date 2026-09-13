@@ -32,7 +32,7 @@ jobs:
           uv run conveyor-dimensioning sensor-benchmark \
             --output-dir outputs/demo --seed 42
           uv run conveyor-dimensioning monte-carlo \
-            --output-dir outputs/demo --count 500 --seed 20261017
+            --output-dir outputs/demo --count 500 --seed 20261018
           uv run conveyor-dimensioning multiframe-demo \
             --output-dir outputs/demo --seed 42
           python - <<'PY'
