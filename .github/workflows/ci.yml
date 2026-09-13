@@ -56,3 +56,45 @@ jobs:
           if payload.get('measurement_status') != 'ok':
               raise SystemExit(f'unexpected measurement status: {payload}')
           PY
+
+  open3d-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install optional Open3D dependencies
+        run: uv sync --frozen --python 3.12 --extra open3d
+      - name: Run Open3D reference tests
+        run: uv run pytest -q tests/test_obb_reference.py
+      - name: Run Open3D comparison script
+        run: |
+          uv run python scripts/compare_obb.py --output /tmp/obb_comparison.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('/tmp/obb_comparison.json')
+          rows = json.loads(path.read_text())
+          if len(rows) != 6:
+              raise SystemExit(f'expected 6 OBB comparison rows, got {len(rows)}')
+          required = {
+              'shape',
+              'custom_dimensions_mm',
+              'reference_dimensions_mm',
+              'reference_method',
+              'open3d_version',
+          }
+          for row in rows:
+              missing = required - row.keys()
+              if missing:
+                  raise SystemExit(f'missing OBB comparison fields: {sorted(missing)}')
+          print('Open3D comparison verified for:', ', '.join(row['shape'] for row in rows))
+          print('Open3D version:', rows[0]['open3d_version'])
+          print('Reference method:', rows[0]['reference_method'])
+          PY
