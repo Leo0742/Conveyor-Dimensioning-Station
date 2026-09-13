@@ -102,6 +102,9 @@ points_mm → RANSAC плоскости ленты → фильтрация → 
 терминал **по одной, сверху вниз**. После каждой команды дождитесь её завершения и
 только потом переходите к следующей.
 
+Для быстрой проверки проекта достаточно выполнить **шаги 1–6**. Шаг 7 содержит
+дополнительные проверки и для первого запуска не обязателен.
+
 ### 1. Проверить, что установлены Git и uv
 
 В терминале выполните:
@@ -175,7 +178,9 @@ uv run ruff check .
 uv run pytest -q
 ```
 
-Если тесты завершились без `FAILED`, базовая проверка проекта пройдена.
+В базовой установке Open3D не ставится специально, поэтому один Open3D-тест будет
+пропущен. Для текущей версии проекта ожидаемый результат — `83 passed, 1 skipped`.
+Это нормально: отдельная полная проверка с Open3D описана ниже.
 
 ### 5. Запустить основное демо
 
@@ -206,7 +211,7 @@ uv run conveyor-dimensioning measure assets/demo/sample_scene.npz --item-id synt
 ### 7. Запустить дополнительные проверки
 
 Эти команды не обязательны для первого знакомства с проектом. Их можно запускать
-по одной после выполнения шагов 1–5.
+по одной после выполнения шагов 1–6.
 
 Тест упрощённой модели сенсора:
 
@@ -214,7 +219,7 @@ uv run conveyor-dimensioning measure assets/demo/sample_scene.npz --item-id synt
 uv run conveyor-dimensioning sensor-benchmark --output-dir assets/demo --seed 42
 ```
 
-Полный Monte Carlo на 500 сценариев (может выполняться несколько минут):
+Полный Monte Carlo на 500 сценариев может выполняться несколько минут:
 
 ```bash
 uv run conveyor-dimensioning monte-carlo --output-dir assets/demo --count 500 --seed 20261017
@@ -229,9 +234,9 @@ uv run conveyor-dimensioning multiframe-demo --output-dir assets/demo --seed 42
 Результаты этих запусков также сохраняются в `assets/demo/`.
 
 <details>
-<summary>Дополнительно: пересборка отчёта и сравнение OBB с Open3D</summary>
+<summary>Дополнительно: пересборка PDF-отчёта</summary>
 
-Сначала пересоздать инженерные схемы:
+Пересоздать инженерные схемы:
 
 ```bash
 uv run python scripts/generate_diagrams.py
@@ -243,17 +248,45 @@ uv run python scripts/generate_diagrams.py
 uv run python scripts/build_report.py
 ```
 
-Для дополнительного сравнения OBB установить optional-зависимость Open3D:
+Итоговый файл будет сохранён как `docs/report.pdf`.
+
+</details>
+
+<details>
+<summary>Дополнительно: проверка OBB через Open3D</summary>
+
+Open3D не нужен для основного алгоритма и поэтому вынесен в optional-зависимость.
+Пакет большой, поэтому его первая установка может занять больше времени, чем обычный
+`uv sync`.
+
+Сначала установить дополнительные зависимости:
 
 ```bash
 uv sync --frozen --python 3.12 --extra open3d
 ```
 
-После этого выполнить сравнение:
+После установки можно повторно запустить весь набор тестов:
+
+```bash
+uv run pytest -q
+```
+
+Для текущей версии проекта ожидается `88 passed` без пропущенного Open3D-теста.
+
+Затем выполнить независимое сравнение OBB:
 
 ```bash
 uv run python scripts/compare_obb.py --output assets/demo/obb_comparison.json
 ```
+
+После выполнения появится файл `assets/demo/obb_comparison.json` с результатами для
+шести форм: `box`, `rotated_box`, `l_prism`, `cylinder`, `composite` и
+`convex_irregular`.
+
+В зафиксированном окружении используется Open3D 0.19.0. Его доступный reference-метод —
+`create_from_points_minimal (minimal-approx)`, поэтому это сравнение используется как
+независимая проверка приближённого OBB, а не как доказательство математически точного
+minimum-volume box.
 
 </details>
 
