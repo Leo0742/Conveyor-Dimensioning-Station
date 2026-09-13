@@ -184,25 +184,29 @@ uv run pytest -q
 
 ### 5. Запустить основное демо
 
+Для локальной проверки результаты лучше сохранять отдельно от зафиксированных файлов
+репозитория. Папка `outputs/` уже добавлена в `.gitignore`, поэтому эти запуски не
+изменяют сохранённые demo-артефакты.
+
 ```bash
-uv run conveyor-dimensioning demo --output-dir assets/demo --seed 42
+uv run conveyor-dimensioning demo --output-dir outputs/demo --seed 42
 ```
 
-После выполнения откройте папку `assets/demo/`. Основные созданные файлы:
+После выполнения откройте папку `outputs/demo/`. Должны появиться:
 
 - `measurement.png` — визуализация измерения;
 - `conveyor_demo.gif` — движение товара по конвейеру;
 - `sample_scene.npz` — синтетическое облако точек для повторного измерения;
 - `example_measurement.json` — пример сообщения для WMS.
 
-Если эти файлы появились, демо отработало корректно.
+Если эти четыре файла созданы, демо отработало корректно.
 
 ### 6. Повторно измерить сохранённую сцену
 
 Эта команда использует `sample_scene.npz`, созданный на предыдущем шаге:
 
 ```bash
-uv run conveyor-dimensioning measure assets/demo/sample_scene.npz --item-id synthetic-check --seed 42
+uv run conveyor-dimensioning measure outputs/demo/sample_scene.npz --item-id synthetic-check --seed 42
 ```
 
 В терминале появится JSON с результатом измерения. Для нормального демо-сценария
@@ -216,22 +220,22 @@ uv run conveyor-dimensioning measure assets/demo/sample_scene.npz --item-id synt
 Тест упрощённой модели сенсора:
 
 ```bash
-uv run conveyor-dimensioning sensor-benchmark --output-dir assets/demo --seed 42
+uv run conveyor-dimensioning sensor-benchmark --output-dir outputs/demo --seed 42
 ```
 
 Полный Monte Carlo на 500 сценариев может выполняться несколько минут:
 
 ```bash
-uv run conveyor-dimensioning monte-carlo --output-dir assets/demo --count 500 --seed 20261017
+uv run conveyor-dimensioning monte-carlo --output-dir outputs/demo --count 500 --seed 20261017
 ```
 
 Демонстрация измерения по нескольким окнам движущегося товара:
 
 ```bash
-uv run conveyor-dimensioning multiframe-demo --output-dir assets/demo --seed 42
+uv run conveyor-dimensioning multiframe-demo --output-dir outputs/demo --seed 42
 ```
 
-Результаты этих запусков также сохраняются в `assets/demo/`.
+Результаты этих запусков также сохраняются в `outputs/demo/`.
 
 <details>
 <summary>Дополнительно: пересборка PDF-отчёта</summary>
@@ -257,7 +261,7 @@ uv run python scripts/build_report.py
 
 Open3D не нужен для основного алгоритма и поэтому вынесен в optional-зависимость.
 Пакет большой, поэтому его первая установка может занять больше времени, чем обычный
-`uv sync`.
+`uv sync`. Этот сценарий отдельно проверяется в CI на Ubuntu + Python 3.12.
 
 Сначала установить дополнительные зависимости:
 
@@ -265,7 +269,7 @@ Open3D не нужен для основного алгоритма и поэт�
 uv sync --frozen --python 3.12 --extra open3d
 ```
 
-После установки можно повторно запустить весь набор тестов:
+После установки повторно запустить весь набор тестов:
 
 ```bash
 uv run pytest -q
@@ -276,12 +280,12 @@ uv run pytest -q
 Затем выполнить независимое сравнение OBB:
 
 ```bash
-uv run python scripts/compare_obb.py --output assets/demo/obb_comparison.json
+uv run python scripts/compare_obb.py --output outputs/demo/obb_comparison.json
 ```
 
-После выполнения появится файл `assets/demo/obb_comparison.json` с результатами для
-шести форм: `box`, `rotated_box`, `l_prism`, `cylinder`, `composite` и
-`convex_irregular`.
+После выполнения будет создан или обновлён файл `outputs/demo/obb_comparison.json`
+с результатами для шести форм: `box`, `rotated_box`, `l_prism`, `cylinder`,
+`composite` и `convex_irregular`.
 
 В зафиксированном окружении используется Open3D 0.19.0. Его доступный reference-метод —
 `create_from_points_minimal (minimal-approx)`, поэтому это сравнение используется как
@@ -295,10 +299,11 @@ minimum-volume box.
 ```text
 src/conveyor_dimensioning/  библиотека и CLI
 tests/                      автоматические тесты
-assets/demo/                демо и зафиксированные результаты
+assets/demo/                зафиксированные demo-артефакты из отчёта
 assets/diagrams/            PNG-иллюстрации и SVG-исходники
 data/hardware_specs.csv     спецификации для сравнения
 docs/                       отчёт, ссылки и аппаратное сравнение
+outputs/                    локальные результаты запуска (не добавляются в Git)
 ```
 
 ## Ограничения
